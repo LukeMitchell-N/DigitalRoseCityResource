@@ -1,0 +1,30 @@
+const icons = {
+    'Clothing'                              : './icons/clothing-store.svg',
+    'Day Services/Hygiene'                  : './icons/person.svg',
+    'Disability and Aging Support'          : './icons/services.svg',
+    'Domestic Violence/Sexual Assault'      : './icons/services.svg',
+    'Employment and Job Training'           : './icons/suitcase.svg',
+    'Family and Parenting Support'          : './icons/services.svg',
+    'Food and Grocery Assistance'           : './icons/grocery.svg',
+    'Health Care'                           : './icons/doctor.svg',
+    'Housing'                               : './icons/home.svg',
+    'Immigration'                           : './icons/legal.svg',
+    'Legal Services'                        : './icons/legal.svg',
+    'LGBTQIA2S+ Resources'                  : './icons/person.svg',
+    'Libraries'                             : './icons/library.svg',
+    'Local Government Services'             : './icons/town-hall.svg',
+    'Meals'                                 : './icons/food.svg',
+    'Mental Health and Recovery Services'   : './icons/services.svg',
+    'Pet Care'                              : './icons/veterinary.svg',
+    'Reentry Resources'                     : './icons/services.svg',
+    'Rental Assistance'                     : './icons/home.svg',
+    'Shelter'                               : './icons/shelter.svg',
+    'STI and HIV Services'                  : './icons/doctor.svg',
+    'Syringe Exchange/Harm Reduction'       : './icons/person.svg',
+    'Utility Assistance and Phone Access'   : './icons/telephone.svg',
+    'Veteran Services'                      : './icons/person.svg',
+    'Youth Services'                        : './icons/person.svg',
+    'Undefined'                             : './icons/diamond.svg'
+};
+
+export { icons };
