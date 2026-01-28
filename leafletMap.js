@@ -72,23 +72,23 @@ function addOrgsToMap() {
     //console.log(orgs)
     for (const org of orgs) {
         console.log(org)
-        if (org.Coords != "N/A") {
+        if (org.Coords != "N/A") {                  //Catch "errors or other"
             let iconName = org['Section']
             if (!(org['Section'] in icons)) { iconName = 'Undefined' }
 
             console.log("Attemtping to add " + org['Section'])
-            L.marker(org.Coords.split(','),
-                {icon: L.icon({ iconUrl: icons[iconName] }) }
+            L.marker(org.Coords.split(','),                         //add this as a variable to the org object
+                {icon: L.icon({ iconUrl: icons[iconName] }) }       
             ).addTo(map)
         };
     };
 }
 
 async function createMapContent() {
-    fetchGoogleSheetData().then(() => {
+    fetchGoogleSheetData().then((p) => {
         createMap();
         addOrgsToMap();
-    }); 
+    });             //return later - then necessary?
 }
 
 // Call the function to fetch and display data
