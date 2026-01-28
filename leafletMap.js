@@ -71,16 +71,17 @@ function addOrgsToMap() {
     //console.log(typeof orgs)
     //console.log(orgs)
     for (const org of orgs) {
-        console.log(org)
-        if (org.Coords != "N/A") {                  //Catch "errors or other"
-            let iconName = org['Section']
-            if (!(org['Section'] in icons)) { iconName = 'Undefined' }
-
-            console.log("Attemtping to add " + org['Section'])
-            L.marker(org.Coords.split(','),                         //add this as a variable to the org object
-                {icon: L.icon({ iconUrl: icons[iconName] }) }       
-            ).addTo(map)
+        let marker = null;                                          //every organization gets a marker - init set to null
+        if (org.Coords && org.Coords.match('[0-9].*')) {            //Catch values that don't start with a number
+            let iconName = org['Section'];
+            if (!(org['Section'] in icons)) {
+                iconName = 'Undefined';
+            }
+            marker = L.marker(org.Coords.split(','),                        
+                { icon: L.icon({ iconUrl: icons[iconName] }) }
+            ).addTo(map);
         };
+        org['marker'] = marker;
     };
 }
 
