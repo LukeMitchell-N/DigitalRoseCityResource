@@ -1,0 +1,106 @@
+/*
+ * Custom CSS
+ */
+
+:root {
+    --bs-body-bg: var(--bs-gray-100);
+    --sidebar-width: 280px;
+    --sidebar-width-collapsed: 80px;
+    --bs-gutter-x: 0;
+    --bs-gutter-y: 0;
+}
+
+#map-nav{
+    padding-left: 20px;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+.sidebar {
+    width: var(--sidebar-width);
+    height: 100vh;
+    background: linear-gradient(135deg, #1a1c2e 0%, #16181f 100%);
+    transition: all 0.3s ease;
+
+}
+
+    .sidebar.collapsed {
+        width: var(--sidebar-width-collapsed);
+    }
+
+.upper_box {
+    padding: 20px;
+}
+
+.row {
+    align-items: center;
+    min-height: 3rem;
+}
+#hamburger {
+    align-self: center;
+}
+
+#nav-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 30px;
+    margin-top: 10px;
+}
+
+.sidebar-link {
+    color: #a0a3bd;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    font-size: 1.4em;
+    text-align: center;
+}
+
+    .sidebar-link:hover {
+        color: #ffffff;
+        transform: scale(1.2);
+    }
+
+    .sidebar-link.active {
+        color: #ffffff;
+    }
+
+
+.collapsed ~ .main-content {
+    margin-left: var(--sidebar-width-collapsed);
+}
+
+.collapsed .hide-on-collapse {
+    opacity: 0;
+    display: none;
+}
+
+
+
+
+
+
+.organization_info {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+
+
+
+.main-content {
+    margin-left: var(--sidebar-width);
+    width: 100%;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    padding: 0px;
+    transition: all 0.3s ease;
+}
+
+
+    
+
+.profile-info {
+    transition: opacity 0.2s ease;
+}
