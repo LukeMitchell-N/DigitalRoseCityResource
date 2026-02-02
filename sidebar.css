@@ -4,14 +4,14 @@
 
 :root {
     --bs-body-bg: var(--bs-gray-100);
-    --sidebar-width: 280px;
+    --sidebar-width: 320px;
     --sidebar-width-collapsed: 80px;
     --bs-gutter-x: 0;
     --bs-gutter-y: 0;
 }
 
 #map-nav{
-    padding-left: 20px;
+    padding: 20px;
 }
 
 body {
@@ -30,23 +30,19 @@ body {
         width: var(--sidebar-width-collapsed);
     }
 
-.upper_box {
-    padding: 20px;
-}
-
 .row {
-    align-items: center;
-    min-height: 3rem;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 #hamburger {
-    align-self: center;
+    text-align: center;
+    padding: 0px;
 }
 
 #nav-icon {
     width: 40px;
     height: 40px;
-    font-size: 30px;
-    margin-top: 10px;
+    font-size: 40px;
 }
 
 .sidebar-link {
@@ -65,6 +61,7 @@ body {
 
     .sidebar-link.active {
         color: #ffffff;
+        organization-detail
     }
 
 
@@ -79,11 +76,11 @@ body {
 
 
 
-
-
-
-.organization_info {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+.organization-detail {
+    border-top: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    background-color: #ccd0e6;
+    padding-top: 10px;
 }
 
 

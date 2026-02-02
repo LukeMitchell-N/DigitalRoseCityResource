@@ -78,11 +78,25 @@ function addOrgsToMap() {
                 iconName = 'Undefined';
             }
             marker = L.marker(org.Coords.split(','),                        
-                { icon: L.icon({ iconUrl: icons[iconName] }) }
+                { icon: L.icon({ iconUrl: icons[iconName], iconSize: [30,30] }) }
             ).addTo(map);
+            marker["Organization"] = org;
+            marker.on('click', markerClick)
         };
         org['marker'] = marker;
     };
+}
+
+function markerClick(e) {
+    console.log(e);
+    console.log(e.target.Organization);
+    //e.target.Organization.marker.options.icon.
+    console.log("org name: " + e.target.Organization["Org Name"])
+    document.getElementById("organization-name").innerHTML = e.target.Organization["Org Name"]
+    document.getElementById("organization-address").innerHTML = e.target.Organization["Address"]
+    document.getElementById("organization-section").innerHTML = e.target.Organization["Section"]
+    document.getElementById("organization-description").innerHTML = e.target.Organization["Description & Hours"]
+    document.getElementById("organization-phone").innerHTML = e.target.Organization["Phone Number"]
 }
 
 async function createMapContent() {
