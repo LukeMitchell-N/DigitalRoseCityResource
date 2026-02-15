@@ -1,5 +1,16 @@
 #myMap {
-    height: 100%;
-    width:  100%;
-    padding: 0px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
+
+.leaflet-left {
+    margin-left: var(--sidebar-width);
+    transition: all 0.3s ease;
+}
+
+    .leaflet-left.collapsed {
+        margin-left: var(--sidebar-width-collapsed);
+    }

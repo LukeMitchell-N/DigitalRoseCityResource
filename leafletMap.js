@@ -61,9 +61,9 @@ async function fetchGoogleSheetData() {
 
 function createMap() {
     map = L.map('myMap').setView([45.5152, -122.6784], 13);
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         maxZoom: 19,
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 }
 
@@ -88,15 +88,24 @@ function addOrgsToMap() {
 }
 
 function markerClick(e) {
-    console.log(e);
-    console.log(e.target.Organization);
+    console.log("asfasdfsdf");
+    //console.log(e.target.Organization);
     //e.target.Organization.marker.options.icon.
-    console.log("org name: " + e.target.Organization["Org Name"])
+    //console.log("org name: " + e.target.Organization["Org Name"])
     document.getElementById("organization-name").innerHTML = e.target.Organization["Org Name"]
     document.getElementById("organization-address").innerHTML = e.target.Organization["Address"]
     document.getElementById("organization-section").innerHTML = e.target.Organization["Section"]
     document.getElementById("organization-description").innerHTML = e.target.Organization["Description & Hours"]
     document.getElementById("organization-phone").innerHTML = e.target.Organization["Phone Number"]
+    console.log("classlist of organization detail: " + document.getElementById("organization-detail").classList)
+    if (document.querySelector('.sidebar').classList.contains("collapsed")) {
+        toggleSidebar();
+    }     
+}
+
+function toggleSidebar() {
+    document.querySelector('.sidebar').classList.toggle('collapsed');
+    document.querySelector('.leaflet-left').classList.toggle('collapsed')
 }
 
 async function createMapContent() {

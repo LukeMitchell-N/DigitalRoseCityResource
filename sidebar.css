@@ -10,8 +10,12 @@
     --bs-gutter-y: 0;
 }
 
-#map-nav{
+#map-nav {
     padding: 20px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1000;
 }
 
 body {
@@ -76,28 +80,10 @@ body {
 
 
 
-.organization-detail {
+#organization-detail {
     border-top: 2px solid rgba(255, 255, 255, 0.1);
     border-radius: 5px;
     background-color: #ccd0e6;
     padding-top: 10px;
 }
 
-
-
-
-.main-content {
-    margin-left: var(--sidebar-width);
-    width: 100%;
-    background-color: #f8f9fa;
-    min-height: 100vh;
-    padding: 0px;
-    transition: all 0.3s ease;
-}
-
-
-    
-
-.profile-info {
-    transition: opacity 0.2s ease;
-}
