@@ -18,7 +18,7 @@ const icons = {
     'Pet Care'                              : './icons/veterinary.svg',
     'Reentry Resources'                     : './icons/services.svg',
     'Rental Assistance'                     : './icons/home.svg',
-    'Shelter'                               : './icons/shelter.svg',
+    'Shelter'                               : './icons/lodging.svg',
     'STI and HIV Services'                  : './icons/doctor.svg',
     'Syringe Exchange/Harm Reduction'       : './icons/person.svg',
     'Utility Assistance and Phone Access'   : './icons/telephone.svg',
