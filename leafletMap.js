@@ -88,16 +88,16 @@ function addOrgsToMap() {
 }
 
 function markerClick(e) {
-    console.log("asfasdfsdf");
     //console.log(e.target.Organization);
     //e.target.Organization.marker.options.icon.
     //console.log("org name: " + e.target.Organization["Org Name"])
+    document.getElementById("lower-box").classList.remove("hidden");
     document.getElementById("organization-name").innerHTML = e.target.Organization["Org Name"]
     document.getElementById("organization-address").innerHTML = e.target.Organization["Address"]
     document.getElementById("organization-section").innerHTML = e.target.Organization["Section"]
     document.getElementById("organization-description").innerHTML = e.target.Organization["Description & Hours"]
     document.getElementById("organization-phone").innerHTML = e.target.Organization["Phone Number"]
-    console.log("classlist of organization detail: " + document.getElementById("organization-detail").classList)
+    console.log("classlist of organization detail: " + document.getElementById("lower-box").classList)
     if (document.querySelector('.sidebar').classList.contains("collapsed")) {
         toggleSidebar();
     }     

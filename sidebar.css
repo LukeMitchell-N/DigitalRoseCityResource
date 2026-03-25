@@ -6,8 +6,8 @@
     --bs-body-bg: var(--bs-gray-100);
     --sidebar-width: 320px;
     --sidebar-width-collapsed: 80px;
-    --bs-gutter-x: 0;
-    --bs-gutter-y: 0;
+    --bs-gutter-x: 0 !important;
+    --bs-gutter-y: 0 !important;
 }
 
 #map-nav {
@@ -36,7 +36,7 @@ body {
 
 .row {
     margin: 0 !important;
-    padding: 0 !important;
+    padding: 0;
 }
 #hamburger {
     text-align: center;
@@ -65,7 +65,6 @@ body {
 
     .sidebar-link.active {
         color: #ffffff;
-        organization-detail
     }
 
 
@@ -78,12 +77,27 @@ body {
     display: none;
 }
 
+.hidden {
+    opacity: 0;
+}
 
+#upper-box {
+    height: 40%;
+}
+#search-results {
+    background: black;
+    border-style: solid;
+    border-width: thin;
+    border-color: white;
+    margin-top: 5px !important;
+    margin-bottom: 5px !important;
+    padding: 5px;
+    color: #a0a3bd;
+}
 
-#organization-detail {
-    border-top: 2px solid rgba(255, 255, 255, 0.1);
+#lower-box {
     border-radius: 5px;
     background-color: #ccd0e6;
-    padding-top: 10px;
+    height: 60%;
 }
 

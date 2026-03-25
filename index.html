@@ -20,64 +20,75 @@
 
     <div class="d-flex">
         <nav id="map-nav" class="nav sidebar d-flex flex-column flex-shrink-0 position-fixed">
-            <div class="row-1 nav-section upper-box flex-grow-1 d-flex flex-column">
-                <div class="row flex-shrink-0">
+            <div id ="upper-box"class="row-1 nav-section flex-grow-1 d-flex flex-column g-0">
+                <div class="row flex-shrink-0 g-0">
                     <div class="col-auto flex-auto" id="hamburger">
                         <div class="sidebar-link flex" onclick="toggleSidebar()">
                             <i class="fa-solid fa-bars" id="nav-icon"></i>
                         </div>
                     </div>
-                    <div class="search-container col flex-grow-1 hide-on-collapse">
+                    <div class="search-container col flex-grow-1 hide-on-collapse" style="margin-left: 3px;">
                         <input type="text" class="form-control search-input" placeholder="Search Organizations...">
                     </div>
                 </div>
-                <div class="row flex-shrink-0">
+                <div class="row flex-shrink-0 g-0">
                     <div class="search-container col flex-grow-1 hide-on-collapse">
                         <input type="text" class="form-control search-input" placeholder="Test item 2">
                     </div>
                 </div>
-                <div class="row flex-shrink-0 overflow-auto">
+                <div class="row flex-shrink-0 overflow-auto g-0">
                     <div class="search-container col flex-grow-1 hide-on-collapse">
                         <input type="text" class="form-control search-input" placeholder="Test item 3">
                     </div>
                 </div>
-                <div class="row flex-grow-1 overflow-auto" >
-                    <ul>
+                <div id="search-results" class="row hide-on-collapse flex-grow-1 overflow-auto g-0">
+                    <div class="organization-result">test</div>
+                    <div class="organization-result">test</div>
+                    <div class="organization-result">test</div>
+                    <div class="organization-result">test</div>
+                    <div class="organization-result">test</div>
+                    <div class="organization-result">test</div>
+                    <div class="organization-result">test</div>
+                    <div class="organization-result">test</div>
+                    <div class="organization-result">test</div>
+                    <div class="organization-result">test</div>
+                    <div class="organization-result">test</div>
+                    <div class="organization-result">test</div>
 
-                    </ul>
                 </div>
 
 
             </div>
 
-            <div class="row-1 nav-section overflow-auto hide-on-collapse" id="organization-detail">
-                <div class="flex-column">
-                    <div class="row">
-                        <div class="col-auto">
-                            <h5 id="organization-name">Organization</h5>
+            <div id="lower-box" class="row-1 nav-section overflow-auto hide-on-collapse hidden">
+                <div class="overflow-auto" style="height:100%">
+                    <div class="flex-column">
+                        <div class="row" style="padding-top: 10px;">
+                            <div class="col-auto">
+                                <h5 id="organization-name">Organization</h5>
+                            </div>
+                        </div>
+                        <div class="row address-row">
+                            <div class="col flex-grow-1">
+                                <p><small id="organization-address"></small></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col flex-grow-1">
+                                <p><small id="organization-phone"></small></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col flex-grow-1">
+                                <p id="organization-section"></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col flex-grow-1">
+                                <p id="organization-description"></p>
+                            </div>
                         </div>
                     </div>
-                    <div class="row address-row">
-                        <div class="col flex-grow-1">
-                            <p><small id="organization-address"></small></p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col flex-grow-1">
-                            <p><small id="organization-phone"></small></p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col flex-grow-1">
-                            <p id="organization-section"></p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col flex-grow-1">
-                            <p id="organization-description"></p>
-                        </div>
-                    </div>
-
                 </div>
             </div>
         </nav>
