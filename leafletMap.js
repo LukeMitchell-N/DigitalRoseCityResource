@@ -1,5 +1,7 @@
 import { icons } from "./icons/icons.js"
-let map;
+let map, markers = L.markerClusterGroup({
+    showCoverageOnHover: false
+});
 const spreadsheetId = '1dsL9BS4IJMr-5jYSyyS_bTYV82wVRCtZrzOZoJUXgpY';
 const apiKey = 'AIzaSyAb5dMPDAJ19o2-gxbyzvb8ChewsG8JxzM';
 const sheetNames = ['Multnomah County', 'Clackamas County', 'Washington County'];
@@ -77,14 +79,16 @@ function addOrgsToMap() {
             if (!(org['Section'] in icons)) {
                 iconName = 'Undefined';
             }
-            marker = L.marker(org.Coords.split(','),                        
-                { icon: L.icon({ iconUrl: icons[iconName], iconSize: [30,30] }) }
-            ).addTo(map);
+            marker = L.marker(org.Coords.split(','),
+                { icon: L.icon({ iconUrl: icons[iconName], iconSize: [30, 30] }) }
+            );
             marker["Organization"] = org;
             marker.on('click', markerClick)
+            markers.addLayer(marker);
         };
         org['marker'] = marker;
     };
+    markers.addTo(map);
 }
 
 function markerClick(e) {
@@ -115,5 +119,19 @@ async function createMapContent() {
     });             //return later - then necessary?
 }
 
+function searchOrganizations() {
+    var search_string = document.getElementById("org-search").value;
+    console.log(search_string);
+}
+
 // Call the function to fetch and display data
 document.addEventListener('DOMContentLoaded', createMapContent);
+document.getElementById("org-search").addEventListener("keypress", function (event) {
+    // If the user presses the "Enter" key on the keyboard
+    if (event.key === "Enter") {
+        //Act as if the enter button was clicked
+        document.getElementById("org-search-enter").click();
+    }
+});
+document.getElementById("org-search-enter").addEventListener('click', searchOrganizations)
+

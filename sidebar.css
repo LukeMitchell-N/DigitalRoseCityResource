@@ -4,7 +4,7 @@
 
 :root {
     --bs-body-bg: var(--bs-gray-100);
-    --sidebar-width: 320px;
+    --sidebar-width: 400px;
     --sidebar-width-collapsed: 80px;
     --bs-gutter-x: 0 !important;
     --bs-gutter-y: 0 !important;
@@ -43,10 +43,27 @@ body {
     padding: 0px;
 }
 
-#nav-icon {
-    width: 40px;
+
+.search-bar {
     height: 40px;
-    font-size: 40px;
+}
+ .search-bar.search-bar-left {
+     border-top-right-radius: 0px;
+     border-bottom-right-radius: 0px;
+ }
+
+
+.btn , .icon-button {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 6px;
+    padding-right: 6px;
+}
+
+
+.terminating {
+    border-top-left-radius: 0px !important;
+    border-bottom-left-radius: 0px !important;
 }
 
 .sidebar-link {
@@ -54,7 +71,7 @@ body {
     transition: all 0.2s ease;
     white-space: nowrap;
     overflow: hidden;
-    font-size: 1.4em;
+    font-size: 2em;
     text-align: center;
 }
 
