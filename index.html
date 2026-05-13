@@ -11,9 +11,12 @@
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
             integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
             crossorigin=""></script>
-    <!-- Leaflet MarkerCluster: -->
-
-    <link rel="stylesheet" href="MarkerCluster.custom.css">
+    <!-- Leaflet MarkerCluster Custom Behavior: -->
+    <script type='text/javascript'>
+        var map = null;     /// Global variable
+    </script>
+    <script type="module" src="CustomClustering.js"></script>
+    <link rel="stylesheet" href="CustomClustering.css">
     <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
     <!-- Bootstrap: -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
