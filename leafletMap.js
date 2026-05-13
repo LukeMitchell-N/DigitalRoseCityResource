@@ -10,6 +10,7 @@ async function createMapContent() {
     fetchGoogleSheetData().then((p) => {
         createMap();
         addOrgsToMap();
+        map.on('zoomend', onZoomEnd);
     });             //return later - then necessary?
 }
 function createMap() {
@@ -138,6 +139,15 @@ function searchOrganizations() {
         console.log(org.marker)
     }
             
+}
+
+var previousZoom;
+
+function onZoomStart() {
+    previousZoom = map.getZoom();
+}
+function onZoomEnd() {
+   
 }
 
 

@@ -1,18 +1,28 @@
+
 export let markers = L.markerClusterGroup({
-    maxClusterRadius: 100,
+    maxClusterRadius: determineCurrentMaxClusterRadius,
     showCoverageOnHover: false,
     iconCreateFunction: createCustomCluster,
     //spiderfyOnMaxZoom: true,
-    spiderfyOnEveryZoom: true,
-    disableClusteringAtZoom: 17
+    //spiderfyOnEveryZoom: true,
 });
-
+var zoomSwitchPointMarker = 17;
+var smallestPointSize = 30;
+function determineCurrentMaxClusterRadius(zoom) {
+    if (zoom >= zoomSwitchPointMarker) {
+        return 10;
+    }
+    else {
+        return 100;
+    }
+}
 
 export function createCustomCluster(cluster) {                        //Custom version of default iconCreateFunction
     var childCount = cluster.getChildCount();
 
-    // Customized - Give all clusters the same symbol - default small
-    var c = ' marker-cluster-small';
+    // Customized - Marker appearance changes whether or not map is at high zoom settings
+    var pointMarker = (map.getZoom() >= zoomSwitchPointMarker)
+      
 
     /*
     if (childCount < 8) {
@@ -43,9 +53,24 @@ export function createCustomCluster(cluster) {                        //Custom v
             - screenCoordinates[i].y * screenCoordinates[(i + 1) % npoints].x;
     }
     var area = Math.abs(total * .5);
-    var ptSize = area < 900 ? 30 : Math.sqrt(area);
+    var ptSize = area < smallestPointSize ** 2 ? smallestPointSize : Math.sqrt(area);
     //console.log("area = " + area + "ptsize: " + ptSize);
 
 
-    return new L.DivIcon({ html: '<div><span>' + childCount + ' <span aria-label="markers"></span>' + '</span></div>', className: 'marker-cluster' + c, iconSize: new L.Point(ptSize, ptSize) });
+    if (pointMarker == true) {
+        let multiIcon = './icons/diamond.svg'
+        return new L.DivIcon({
+            html: '<img src = "' + multiIcon + '" style="width: ' + smallestPointSize + 'px; height: ' + smallestPointSize + 'px;">',
+            className: 'leaflet-marker-icon leaflet-zoom-animated leaflet-interactive',
+            iconSize: smallestPointSize
+        });
+    }
+    else {
+        return new L.DivIcon({
+            html: '<div><span>' + childCount + ' <span aria-label="markers"></span>' + '</span></div>',
+            className: 'marker-cluster marker-cluster-small',
+            iconSize: new L.Point(ptSize, ptSize)
+        });
+    }
+    
 }
