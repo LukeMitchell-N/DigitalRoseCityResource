@@ -10,6 +10,7 @@ async function createMapContent() {
     fetchGoogleSheetData().then((p) => {
         createMap();
         addOrgsToMap();
+        //createLegend();
         map.on('zoomend', onZoomEnd);
     });             //return later - then necessary?
 }
@@ -89,6 +90,14 @@ const rowsToObjects = (rows) => {
     });
 }
 
+
+/*
+function createLegend() {
+    console.log("trying to set up div overlay")
+    newDivOverlay = L.DivOverlay(interactive = true, content="<div style='backgroundcolor: blue'></div>");
+    newDivOverlay.openOn(map)
+}
+*/
 
 // Map functionality
 function markerClick(e) {

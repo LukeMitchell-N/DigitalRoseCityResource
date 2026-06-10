@@ -30,11 +30,12 @@
 <body>
 
     <div translate="no" class="d-flex">
-        <nav id="map-nav" class="nav sidebar d-flex flex-column flex-shrink-0 position-fixed">
+        <nav id="map-nav" class="z1000 nav sidebar d-flex flex-column flex-shrink-0 position-fixed">
             <div id ="upper-box"class="row-1 nav-section flex-grow-1 d-flex flex-column g-0">
                 <div class="row flex-shrink-0 g-0">
-                    <button type="button" class="icon-button col-auto btn flex-auto"  onclick="toggleSidebar()">
-                        <i class="fa-solid fa-bars sidebar-link"></i>
+                    <button type="button" class="icon-button col-auto btn flex-auto" onclick="toggleSidebar()">
+                        <!-- <i class="fa-solid fa-bars ui-button button-lt"></i> -->
+                        <img src="./icons/bars-solid.svg" alt="" aria-hidden="true" width="30" height="30" class="ui-button button-lt svg">
                     </button>
                     <div class="col flex-grow-1 hide-on-collapse" style="margin-left: 3px;">
                         <input id="org-search" type="search" class="form-control search-bar search-bar-left" placeholder="Search Organizations...">
@@ -101,14 +102,14 @@
             </div>
         </nav>
 
-        <main class="main-content">
-            <div id="myMap" class="container-fluid">
-
-                <script type="module" src="leafletMap.js">
-                </script>
-
+        <div class="main-content">
+            <button type="button" class="icon-button btn position-fixed top-0 end-0 m-3 z1000 ">
+                <img src="./icons/legend.svg" alt="" aria-hidden="true" width="30" height="30" class="ui-button button-dk svg">
+            </button>
+            <div id="myMap" class="container-fluid ">
+                <script type="module" src="leafletMap.js"></script>
             </div>
-        </main>
+        </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     <script>

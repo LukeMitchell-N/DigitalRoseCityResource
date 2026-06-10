@@ -10,11 +10,7 @@
     --bs-gutter-y: 0 !important;
 }
 
-#map-nav {
-    padding: 20px;
-    position: absolute;
-    top: 0;
-    left: 0;
+.z1000 {
     z-index: 1000;
 }
 
@@ -23,11 +19,14 @@ body {
 }
 
 .sidebar {
+    padding: 20px;
+    position: absolute;
+    top: 0;
+    left: 0;
     width: var(--sidebar-width);
     height: 100vh;
     background: linear-gradient(135deg, #1a1c2e 0%, #16181f 100%);
     transition: all 0.3s ease;
-
 }
 
     .sidebar.collapsed {
@@ -37,10 +36,6 @@ body {
 .row {
     margin: 0 !important;
     padding: 0;
-}
-#hamburger {
-    text-align: center;
-    padding: 0px;
 }
 
 
@@ -66,23 +61,53 @@ body {
     border-bottom-left-radius: 0px !important;
 }
 
-.sidebar-link {
-    color: #a0a3bd;
-    transition: all 0.2s ease;
+.ui-button {
+    transition: all 0.3s ease;
     white-space: nowrap;
     overflow: hidden;
     font-size: 2em;
     text-align: center;
 }
-
-    .sidebar-link:hover {
-        color: #ffffff;
+    .ui-button:hover {
         transform: scale(1.2);
     }
 
-    .sidebar-link.active {
-        color: #ffffff;
+    .ui-button.button-lt {
+        color: #a0a3bd;
     }
+        .ui-button.button-lt.active {
+            color: #ffffff;
+        }
+        .ui-button.button-lt:hover {
+            color: #ffffff;
+        }
+    .ui-button.button-lt.svg {
+        filter: brightness(0) saturate(100%) invert(77%) sepia(17%) saturate(354%) hue-rotate(196deg) brightness(85%) contrast(81%);
+    }
+        .ui-button.button-lt.svg:hover .ui-button.button-lt.svg.active {
+            filter: brightness(0) saturate(100%) invert(99%) sepia(1%) saturate(0%) hue-rotate(92deg) brightness(104%) contrast(100%);
+        }
+
+    .ui-button.button-dk {
+        color: #7D7D7D;
+    }
+        .ui-button.button-dk.active {
+            color: #000000;
+        }
+        .ui-button.button-dk:hover {
+            color: #000000;
+        }
+
+        .ui-button.button-dk.svg {
+            /*filter: brightness(0) saturate(100%) invert(49%) sepia(42%) saturate(13%) hue-rotate(48deg) brightness(92%) contrast(90%);*/
+        }
+            .ui-button.button-dk.svg:hover .ui-button.button-dk.svg.active {
+                /*filter: brightness(0) saturate(100%) invert(0%) sepia(100%) saturate(3300%) hue-rotate(75deg) brightness(106%) contrast(107%);*/
+            }
+
+    
+
+    
 
 
 .collapsed ~ .main-content {
