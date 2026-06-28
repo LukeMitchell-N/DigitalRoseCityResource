@@ -2,7 +2,7 @@ const spreadsheetId = '1dsL9BS4IJMr-5jYSyyS_bTYV82wVRCtZrzOZoJUXgpY';
 const apiKey = 'AIzaSyAb5dMPDAJ19o2-gxbyzvb8ChewsG8JxzM';
 const sheetNames = ['Multnomah County', 'Clackamas County', 'Washington County'];
 let orgs = [];
-import {markers, createCustomCluster} from "./CustomClustering.js"      
+import {allMarkers, searchMarkers, createCustomCluster} from "./CustomClustering.js"      
 import { icons } from "./icons/icons.js"
 
 //Setting up the map
@@ -28,20 +28,21 @@ function addOrgsToMap() {
         let marker = null;                                          //One marker per organization - init null
         if (org.Coords && org.Coords.match('[0-9].*')) {            //Catch lat/lng values that don't start with a number
             let iconName = org['Section'];
-            if (!(org['Section'] in icons)) {
+            if (!(org['Section'] in icons)) {                       // Give the organization marker the appropriate icon
                 iconName = 'Undefined';
             }
             marker = L.marker(org.Coords.split(','),
                 { icon: L.icon({ iconUrl: icons[iconName], iconSize: [30, 30] }) }
             );
+            org["Lat"] = parseFloat(org.Coords.split(',')[0])
+            org["Lng"] = parseFloat(org.Coords.split(',')[1])
             marker["Organization"] = org;
-            marker["Active"] = true;
             marker.on('click', markerClick)
-            markers.addLayer(marker);
+            allMarkers.addLayer(marker);
         };
         org['marker'] = marker;
     };
-    markers.addTo(map);
+    allMarkers.addTo(map);
 }
 
 //Getting data from Google Sheets
@@ -101,20 +102,23 @@ function createLegend() {
 
 // Map functionality
 function markerClick(e) {
-    //console.log(e.target.Organization);
-    //e.target.Organization.marker.options.icon.
-    //console.log("org name: " + e.target.Organization["Org Name"])
+    loadSidebarOrgDetail(e.target.Organization);
+}
+
+function loadSidebarOrgDetail(org) {
+    // Grab relevant information from the target clicked marker
+    // Use the org info to populate the correct fields in the organization detail pane
     document.getElementById("lower-box").classList.remove("hidden");
-    document.getElementById("organization-name").innerHTML = e.target.Organization["Org Name"]
-    document.getElementById("organization-address").innerHTML = e.target.Organization["Address"]
-    document.getElementById("organization-section").innerHTML = e.target.Organization["Section"]
-    document.getElementById("organization-description").innerHTML = e.target.Organization["Description & Hours"]
-    document.getElementById("organization-phone").innerHTML = e.target.Organization["Phone Number"]
-    //console.log("classlist of organization detail: " + document.getElementById("lower-box").classList)
+    document.getElementById("organization-name").innerHTML = org["Org Name"]
+    document.getElementById("organization-address").innerHTML = org["Address"]
+    document.getElementById("organization-section").innerHTML = org["Section"]
+    document.getElementById("organization-description").innerHTML = org["Description & Hours"]
+    document.getElementById("organization-phone").innerHTML = org["Phone Number"]
+
+    // If the sidebar is currently collapsed, open it.
     if (document.querySelector('.sidebar').classList.contains("collapsed")) {
         toggleSidebar();
-    }   
-    console.log(map.getZoom())
+    }
 }
 
 function toggleSidebar() {
@@ -122,32 +126,49 @@ function toggleSidebar() {
     document.querySelector('.leaflet-left').classList.toggle('collapsed')
 }
 
-function searchOrganizations() {
-    var search_string = document.getElementById("org-search").value;
-    console.log(search_string);
-    /*for (let key in markers) {
-        console.log(`${key}: ${markers[key]}`);
-    }*/
-    console.log(orgs)
-    for (const org of orgs) {
-        console.log(org);
-        console.log(org.marker);
-        org["marker"]["Active"] = true;                             // Set all organizations/markers back to active (clear prev. search)
-        let org_values = Object.values(org);                    
-        console.log("org_values: " + org_values);
-        console.log("typeof org_values: " + typeof (org_values));
+function searchOrganizations(search_string="") {
+    console.log(search_string)
+    search_string = document.getElementById("org-search").value
+    searchMarkers.clearLayers();                
 
-        // If the organization does not contain the search term in ANY of its values
-        // Set the org/marker to inactive
-        if (org_values.some((val) => String(val).toLowerCase().includes(search_string.toLowerCase())) == false) {
-            org.marker["Active"] = false;
+    var searchResultOrgs = orgs.filter(org => {                                         // Create a new filtered organization list for the search
+        return Object.values(org).some(val => {                                         // Accept any org where the string value from any field
+            return String(val).toLowerCase().includes(search_string.toLowerCase())      // Contains the search string
+        })
+    });
+
+    searchResultOrgs.forEach(org => {                                           // Iterate over all accepted search results
+        if (org.Coords && org.Coords.match('[0-9].*')) {                        // Where the org has valid coordinates
+            searchMarkers.addLayer(org.marker)                                  // Add it to the searchMarkers list
         }
-    }
+    });
 
-    for (org in orgs) {
-        console.log(org.marker)
-    }
-            
+    // Swap the active marker layers
+    map.removeLayer(allMarkers);
+    map.addLayer(searchMarkers);      
+
+    // Build results list
+    addOrgsToResultsPane(searchResultOrgs);
+}
+
+function addOrgsToResultsPane(searchResultOrgs) {
+    var resultsParent = document.getElementById("search-results");
+    resultsParent.replaceChildren()
+    var resultsList = []
+    searchResultOrgs.forEach(org => {
+        var elem = document.createElement("div")
+        elem.innerHTML = `<a href="#">` + org["Org Name"] + `</a>`
+        elem.addEventListener("click", e => {
+            loadSidebarOrgDetail(org);
+            if (org.Coords && org.Coords.match('[0-9].*')) {
+                console.log(org);
+                map = map.setView([org["Lat"], org["Lng"]], 17)
+            }
+        })
+        resultsParent.appendChild(elem);
+    })
+
+
 }
 
 var previousZoom;
@@ -162,13 +183,20 @@ function onZoomEnd() {
 
 
 // Call the function to fetch and display data
-document.addEventListener('DOMContentLoaded', createMapContent);
-document.getElementById("org-search").addEventListener("keypress", function (event) {
-    // If the user presses the "Enter" key on the keyboard
-    if (event.key === "Enter") {
-        //Act as if the enter button was clicked
-        document.getElementById("org-search-enter").click();
-    }
+document.addEventListener('DOMContentLoaded', function (event) {
+    createMapContent().then((p) => {
+        createClickEvents();
+    })
 });
-document.getElementById("org-search-enter").addEventListener('click', searchOrganizations)
 
+// Set up click events
+function createClickEvents() {
+    document.getElementById("org-search").addEventListener("keypress", function (event) {
+        // If the user presses the "Enter" key on the keyboard
+        if (event.key === "Enter") {
+            //Act as if the enter button was clicked
+            document.getElementById("org-search-enter").click();
+        }
+    });
+    document.getElementById("org-search-enter").addEventListener('click', e => searchOrganizations(document.getElementById("org-search").value))
+}

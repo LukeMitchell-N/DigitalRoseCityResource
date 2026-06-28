@@ -1,5 +1,12 @@
 
-export let markers = L.markerClusterGroup({
+export let allMarkers = L.markerClusterGroup({
+    maxClusterRadius: determineCurrentMaxClusterRadius,
+    showCoverageOnHover: false,
+    iconCreateFunction: createCustomCluster,
+    //spiderfyOnMaxZoom: true,
+    //spiderfyOnEveryZoom: true,
+});
+export let searchMarkers = L.markerClusterGroup({
     maxClusterRadius: determineCurrentMaxClusterRadius,
     showCoverageOnHover: false,
     iconCreateFunction: createCustomCluster,
