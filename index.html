@@ -29,95 +29,89 @@
 </head>
 <body>
 
-    <div translate="no" class="d-flex">
-        <nav id="map-nav" class="z1000 nav sidebar d-flex flex-column flex-shrink-0 position-fixed">
-            <div id ="upper-box"class="row-1 nav-section flex-grow-1 d-flex flex-column g-0">
-                <div class="row flex-shrink-0 g-0">
-                    <button type="button" class="icon-button col-auto btn flex-auto" onclick="toggleSidebar()">
-                        <!-- <i class="fa-solid fa-bars ui-button button-lt"></i> -->
-                        <img src="./icons/bars-solid.svg" alt="" aria-hidden="true" width="30" height="30" class="ui-button button-lt svg">
-                    </button>
-                    <div class="col flex-grow-1 hide-on-collapse" style="margin-left: 3px;">
-                        <input id="org-search" type="search" class="form-control search-bar search-bar-left" placeholder="Search Organizations...">
+    <div class="container-fluid h-100">
+        <div class="row h-100">
+            <nav id="map-nav" class="z1000 nav sidebar d-flex flex-column flex-shrink-0 position-fixed">
+                <div id="upper-box" class="row-1 nav-section flex-grow-1 d-flex flex-column g-0">
+                    <div class="row flex-shrink-0 g-0">
+                        <button type="button" class="icon-button col-auto btn flex-auto" onclick="toggleSidebar()">
+                            <!-- <i class="fa-solid fa-bars ui-button button-lt"></i> -->
+                            <img src="./icons/bars-solid.svg" alt="" aria-hidden="true" width="30" height="30" class="ui-button button-lt svg">
+                        </button>
+                        <div class="col flex-grow-1 hide-on-collapse" style="margin-left: 3px;">
+                            <input id="org-search" type="search" class="form-control search-bar search-bar-left" placeholder="Search Organizations...">
+                        </div>
+                        <button id="org-search-enter" class="col col-auto icon-button flex-auto btn btn-primary terminating hide-on-collapse">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+
                     </div>
-                    <button id="org-search-enter" class="col col-auto icon-button flex-auto btn btn-primary terminating hide-on-collapse">
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </button>
-                    
-                </div>
-                <div class="row flex-shrink-0 g-0">
-                    <div class="search-container col flex-grow-1 hide-on-collapse">
-                        <input type="text" class="form-control search-bar" placeholder="Test item 2">
+                    <div class="row flex-shrink-0 g-0">
+                        <div class="search-container col flex-grow-1 hide-on-collapse">
+                            <input type="text" class="form-control search-bar" placeholder="Test item 2">
+                        </div>
                     </div>
-                </div>
-                <div class="row flex-shrink-0 overflow-auto g-0">
-                    <div class="search-container col flex-grow-1 hide-on-collapse">
-                        <input type="text" class="form-control search-bar" placeholder="Test item 3">
+                    <div class="row flex-shrink-0 overflow-auto g-0">
+                        <div class="search-container col flex-grow-1 hide-on-collapse">
+                            <input type="text" class="form-control search-bar" placeholder="Test item 3">
+                        </div>
                     </div>
-                </div>
-                <div id="search-results" class="row flex-grow-1 hide-on-collapse overflow-auto">
-                    <div class="organization-result">test search result 1</div>
-                    <div class="organization-result">test search result  2</div>
-                    <div class="organization-result">test search result  3</div>
-                    <div class="organization-result">test search result  4</div>
-                    <div class="organization-result">test search result  5</div>
-                    <div class="organization-result">test search result  6</div>
-                    <div class="organization-result">test search result  7</div>
-                    <div class="organization-result">test search result  8</div>
-                </div>
+                    <div id="search-results" class="row flex-grow-1 hide-on-collapse overflow-auto">
+                    </div>
 
 
-            </div>
+                </div>
 
-            <div id="lower-box" class="row-1 nav-section overflow-auto hide-on-collapse hidden">
-                <div class="overflow-auto" style="height:100%">
-                    <div class="flex-column">
-                        <div class="row" style="padding-top: 10px;">
-                            <div class="col-auto">
-                                <h5 id="organization-name">Organization</h5>
+                <div id="lower-box" class="row-1 nav-section overflow-auto hide-on-collapse hidden">
+                    <div class="overflow-auto" style="height:100%">
+                        <div class="flex-column">
+                            <div class="row" style="padding-top: 10px;">
+                                <div class="col-auto">
+                                    <h5 id="organization-name">Organization</h5>
+                                </div>
                             </div>
-                        </div>
-                        <div class="row address-row">
-                            <div class="col flex-grow-1">
-                                <p><small id="organization-address"></small></p>
+                            <div class="row address-row">
+                                <div class="col flex-grow-1">
+                                    <p><small id="organization-address"></small></p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col flex-grow-1">
-                                <p><small id="organization-phone"></small></p>
+                            <div class="row">
+                                <div class="col flex-grow-1">
+                                    <p><small id="organization-phone"></small></p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col flex-grow-1">
-                                <p id="organization-section"></p>
+                            <div class="row">
+                                <div class="col flex-grow-1">
+                                    <p id="organization-section"></p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col flex-grow-1">
-                                <p id="organization-description"></p>
+                            <div class="row">
+                                <div class="col flex-grow-1">
+                                    <p id="organization-description"></p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </nav>
+            </nav>
 
-        <div class="main-content">
-            <button type="button" class="icon-button btn position-fixed top-0 end-0 m-3 z1000 ">
-                <img src="./icons/legend.svg" alt="" aria-hidden="true" width="30" height="30" class="ui-button button-dk svg">
-            </button>
-            <div class="legend hidden"></div>
-            <div id="myMap" class="container-fluid ">
-                <script type="module" src="leafletMap.js"></script>
+            <div class="main-content">
+                <button type="button" class="icon-button btn position-fixed top-0 end-0 m-3 z1000 ">
+                    <img src="./icons/legend.svg" alt="" aria-hidden="true" width="30" height="30" class="ui-button button-dk svg">
+                </button>
+                <div class="legend hidden"></div>
+                <div id="myMap" class="container-fluid ">
+                    <script type="module" src="leafletMap.js"></script>
+                </div>
             </div>
         </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+        <script>
+            function toggleSidebar() {
+                document.querySelector('.sidebar').classList.toggle('collapsed');
+                document.querySelector('.leaflet-left').classList.toggle('collapsed')
+            }
+        </script>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-    <script>
-        function toggleSidebar() {
-            document.querySelector('.sidebar').classList.toggle('collapsed');
-            document.querySelector('.leaflet-left').classList.toggle('collapsed')
-        }
-    </script>
 </body>
 </html>

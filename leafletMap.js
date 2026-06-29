@@ -103,6 +103,7 @@ function createLegend() {
 // Map functionality
 function markerClick(e) {
     loadSidebarOrgDetail(e.target.Organization);
+    focusOnCoords(e.target.Organization["Lat"], e.target.Organization["Lng"]);
 }
 
 function loadSidebarOrgDetail(org) {
@@ -149,6 +150,12 @@ function searchOrganizations(search_string="") {
 
     // Build results list
     addOrgsToResultsPane(searchResultOrgs);
+
+    // Pan/zoom to show all results
+    map.fitBounds(searchMarkers.getBounds())
+
+    // Remove any previous entry in the organization detail pane
+    document.getElementById("lower-box").classList.add('hidden')
 }
 
 function addOrgsToResultsPane(searchResultOrgs) {
@@ -158,17 +165,47 @@ function addOrgsToResultsPane(searchResultOrgs) {
     searchResultOrgs.forEach(org => {
         var elem = document.createElement("div")
         elem.innerHTML = `<a href="#">` + org["Org Name"] + `</a>`
-        elem.addEventListener("click", e => {
-            loadSidebarOrgDetail(org);
-            if (org.Coords && org.Coords.match('[0-9].*')) {
-                console.log(org);
-                map = map.setView([org["Lat"], org["Lng"]], 17)
+        elem.addEventListener("click", e => {                               // When search result org link clicked
+            loadSidebarOrgDetail(org);                                      // Load it into the details pane
+            if (org.Coords && org.Coords.match('[0-9].*')) {                // If it has coordinates
+                focusOnCoords(org["Lat"], org["Lng"], 17)                          // Move the map to focus on it
             }
         })
         resultsParent.appendChild(elem);
     })
 
 
+}
+
+function focusOnCoords(lat, lng, zoom = null) {
+    if (zoom) {
+        console.log("focusing with a zoom level")
+        map = map.flyTo([lat, lng], zoom,
+            {
+                animate: true,
+                duration: 1,
+                easeLinearity: 0.5,
+                noMoveStart: false
+            }
+        );
+    }
+    else {
+        console.log("focusing without a zoom level")
+        map = map.setView([lat, lng], map.getZoom(), {
+            pan: {
+                animate: true,
+                duration: .25,
+                easeLinearity: 0.5,
+                noMoveStart: false
+            },
+            zoom: {
+                animate: true,
+                duration: .25,
+                easeLinearity: 0.5,
+                noMoveStart: false
+            }
+        });
+    }
 }
 
 var previousZoom;
