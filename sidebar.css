@@ -4,33 +4,37 @@
 
 :root {
     --bs-body-bg: var(--bs-gray-100);
+    
     --sidebar-width: 400px;
     --sidebar-width-collapsed: 80px;
-    --bs-gutter-x: 0 !important;
+    /*--bs-gutter-x: 0 !important;
     --bs-gutter-y: 0 !important;
+    */
+    height: 100vh;
+    overflow: hidden;
 }
 
 .z1000 {
     z-index: 1000;
 }
 
-body {
-    overflow-x: hidden;
+html, body {
+    height: 100%;
 }
 
-.sidebar {
-    padding: 20px;
-    position: absolute;
-    top: 0;
-    left: 0;
+#sidebar {
+    padding: 10px;
     width: var(--sidebar-width);
-    height: 100vh;
+    min-width: 250px; /* minimum */
+    max-width: 500px; /* optional */
+    overflow: auto;
     background: linear-gradient(135deg, #1a1c2e 0%, #16181f 100%);
     transition: all 0.3s ease;
 }
 
-    .sidebar.collapsed {
+    #sidebar.collapsed {
         width: var(--sidebar-width-collapsed);
+        min-width: var(--sidebar-width-collapsed);
     }
 
 .row {
@@ -107,13 +111,6 @@ body {
 
     
 
-    
-
-
-.collapsed ~ .main-content {
-    margin-left: var(--sidebar-width-collapsed);
-}
-
 .collapsed .hide-on-collapse {
     opacity: 0;
     display: none;
@@ -123,9 +120,7 @@ body {
     opacity: 0;
 }
 
-#upper-box {
-    height: 40%;
-}
+
 #search-results {
     background: black;
     border-style: solid;
@@ -137,9 +132,14 @@ body {
     color: #a0a3bd;
 }
 
-#lower-box {
+#sidebar-upper-box {
+    flex-basis: 40%;
+    max-height: 40%;
+}
+#sidebar-lower-box {
     border-radius: 5px;
     background-color: #ccd0e6;
-    height: 60%;
+    flex-basis: 60%;
+    max-height: 60%;
 }
 

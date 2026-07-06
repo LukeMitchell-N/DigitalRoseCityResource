@@ -1,20 +1,10 @@
 #myMap {
-    position: absolute;
     height: 100%;
     width: 100%;
 }
 
 .leaflet-tile-pane img.leaflet-tile {
     filter: saturate(500%);
-    /* Vendor prefixes for broader browser support */
     -webkit-filter: saturate(500%) contrast(100%);
 }
 
-.leaflet-left {
-    margin-left: var(--sidebar-width);
-    transition: all 0.3s ease;
-}
-
-    .leaflet-left.collapsed {
-        margin-left: var(--sidebar-width-collapsed);
-    }
