@@ -1,18 +1,20 @@
 const spreadsheetId = '1dsL9BS4IJMr-5jYSyyS_bTYV82wVRCtZrzOZoJUXgpY';
 const apiKey = 'AIzaSyAb5dMPDAJ19o2-gxbyzvb8ChewsG8JxzM';
-const sheetNames = ['Multnomah County', 'Clackamas County', 'Washington County'];
-let orgs = [];
+//const sheetNames = ['Multnomah County', 'Clackamas County', 'Washington County'];
+const orgs =[], counties = [], sections = [];
 import {allMarkers, searchMarkers, createCustomCluster} from "./CustomClustering.js"      
 import { icons } from "./icons/icons.js"
 
 //Setting up the map
 async function createMapContent() {
-    fetchGoogleSheetData().then((p) => {
-        createMap();
-        addOrgsToMap();
+    await fetchGoogleSheetData()
+    createMap();
+    addOrgsToMap();
         //createLegend();
-        map.on('zoomend', onZoomEnd);
-    });             //return later - then necessary?
+    map.on('zoomend', onZoomEnd);
+                //return later - then necessary?
+    console.log("finished with createmapcontent")
+    console.log("counties is ", counties)
 }
 function createMap() {
     map = L.map('myMap').setView([45.5152, -122.6784], 13);
@@ -34,15 +36,36 @@ function addOrgsToMap() {
             marker = L.marker(org.Coords.split(','),
                 { icon: L.icon({ iconUrl: icons[iconName], iconSize: [30, 30] }) }
             );
-            org["Lat"] = parseFloat(org.Coords.split(',')[0])
-            org["Lng"] = parseFloat(org.Coords.split(',')[1])
+            org.Lat = parseFloat(org.Coords.split(',')[0])
+            org.Lng = parseFloat(org.Coords.split(',')[1])
             marker["Organization"] = org;
             marker.on('click', markerClick)
             allMarkers.addLayer(marker);
         };
-        org['marker'] = marker;
+        org.Marker = marker;
+
+        if (org.Section && org.Section.length > 0 &&                // If the organization type is not empty or null
+            sections.includes(org.Section) == false) {              // And if it hasn't been recorded previously
+            sections.push(org.Section)                                  // Add it to the list of sections
+        }
     };
     allMarkers.addTo(map);
+    console.log(counties);
+    console.log(sections);
+}
+//Get the names of each sheet
+//This is also the list of counties needed for the county filtering
+async function getSheetNames(spreadsheetId, apiKey) {
+    try {
+        const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}?key=${apiKey}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        return data.sheets.map(sheet => sheet.properties.title);
+    }
+    catch (error){
+        console.error('Error fetching Google Sheets names:', error);
+        throw ('Error fetching Google Sheets names:', error)
+    }  
 }
 
 //Getting data from Google Sheets
@@ -54,8 +77,7 @@ async function fetchSingleSheet(sheet) {
         const data = await response.json();
 
         // Extract rows from the data
-        //console.log(data.values)
-        return data.values;
+        return data.values || [];
 
     } catch (error) {
         console.error('Error fetching Google Sheets data:', error);
@@ -63,31 +85,34 @@ async function fetchSingleSheet(sheet) {
     }
 }
 
-async function fetchGoogleSheetData() {
-    for (const sheet of sheetNames) {
-        try {
-            const rows = await fetchSingleSheet(sheet)
-            if (rows != null) {
-                orgs.push(...rowsToObjects(rows));
+async function fetchGoogleSheetData() { 
+    const sheetNames = await getSheetNames(spreadsheetId, apiKey)               // Get the names of all sheets in the spreadsheet
+    for (const sheet of sheetNames) {                                           // Iterate over the sheet names
+        if (sheet.toLowerCase().includes("county")) {                           // If the sheet name refers to data for a county (not sections or some ancillary table)
+            counties.push(sheet.slice(0, -7))                                   // Cut last 7 characters " Counties" and add to counties list
+            try {
+                const rows = await fetchSingleSheet(sheet)                          // Pull the rows from the given sheet                
+                if (rows != null) {                                      
+                    orgs.push(...rowsToObjects(rows, sheet));                       // Transform the raw rows to objects with named properties                         
+                }
+            } catch (error) {
+                console.error('Error fetching Google Sheets data:', error);
             }
-            //console.log(orgs)
-
-
-        } catch (error) {
-            console.error('Error fetching Google Sheets data:', error);
         }
     };
 }
 
-const rowsToObjects = (rows) => {
+const rowsToObjects = (rows, sheet) => {
     const fieldNames = rows[0];
+    const dataRows = rows.slice(1);
 
-    const reducer = (accumulator, currentVal, index) => {
-        accumulator[fieldNames[index]] = currentVal;
-        return accumulator
-    }
-    return rows.slice(1).map((row) => {
-        return row.reduce(reducer, {})
+    return dataRows.map((row) => {                                              // Create a new array for rows
+        const obj = row.reduce((accumulator, currentVal, index) => {                // Function to build up an object for each row
+            accumulator[fieldNames[index]] = currentVal;
+            return accumulator;
+        }, {});
+        obj.County = sheet;                                                     // Add the county as a new property
+        return obj;
     });
 }
 
@@ -126,6 +151,10 @@ function toggleSidebar() {
     document.querySelector('#sidebar').classList.toggle('collapsed');
 }
 
+function filterAndSearchOrganizations() {
+
+    searchOrganizations(document.getElementById("org-search").value)
+}
 function searchOrganizations(search_string="") {
     console.log(search_string)
     search_string = document.getElementById("org-search").value
@@ -139,7 +168,7 @@ function searchOrganizations(search_string="") {
 
     searchResultOrgs.forEach(org => {                                           // Iterate over all accepted search results
         if (org.Coords && org.Coords.match('[0-9].*')) {                        // Where the org has valid coordinates
-            searchMarkers.addLayer(org.marker)                                  // Add it to the searchMarkers list
+            searchMarkers.addLayer(org.Marker)                                  // Add it to the searchMarkers list
         }
     });
 
@@ -220,8 +249,30 @@ function onZoomEnd() {
 document.addEventListener('DOMContentLoaded', function (event) {
     createMapContent().then((p) => {
         createClickEvents();
+        populateDropdowns();
     })
 });
+
+
+function populateGenericDropdown(ID, list) {
+    for (const i in list) {
+        document.getElementById(ID).innerHTML +=
+            `<li>
+                <a class="dropdown-item" href = "#" >
+                    <div class="form-check form-check-reverse">
+                        <label class="form-check-label" for="${list[i]}">${list[i]}</label>
+                        <input class="form-check-input" type="checkbox" value="${list[i]}" id="${list[i]}" />
+                    </div>
+                </a>
+            </li> `;
+    }
+}
+
+// Fill in filter dropdowns with correct county and section info
+function populateDropdowns() {
+    populateGenericDropdown("countyDropdown", counties);
+    populateGenericDropdown("resourceDropdown", sections);
+}
 
 // Set up click events
 function createClickEvents() {
@@ -232,5 +283,5 @@ function createClickEvents() {
             document.getElementById("org-search-enter").click();
         }
     });
-    document.getElementById("org-search-enter").addEventListener('click', e => searchOrganizations(document.getElementById("org-search").value))
+    document.getElementById("org-search-enter").addEventListener('click', e => filterAndSearchOrganizations())
 }

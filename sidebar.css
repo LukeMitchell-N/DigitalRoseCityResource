@@ -43,8 +43,15 @@ html, body {
 }
 
 
+.dropdown-menu {
+    max-height: 200px;
+    max-width: 100%;
+    overflow-y: auto;
+    font-size: 12px;
+}
+
 .search-bar {
-    height: 40px;
+    /*height: 40px;*/
 }
  .search-bar.search-bar-left {
      border-top-right-radius: 0px;
