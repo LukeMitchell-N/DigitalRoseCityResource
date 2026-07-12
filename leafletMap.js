@@ -93,7 +93,7 @@ async function fetchGoogleSheetData() {
             try {
                 const rows = await fetchSingleSheet(sheet)                          // Pull the rows from the given sheet                
                 if (rows != null) {                                      
-                    orgs.push(...rowsToObjects(rows, sheet));                       // Transform the raw rows to objects with named properties                         
+                    orgs.push(...rowsToObjects(rows, sheet.slice(0, -7)));          // Transform the raw rows to objects with named properties                         
                 }
             } catch (error) {
                 console.error('Error fetching Google Sheets data:', error);
@@ -152,15 +152,45 @@ function toggleSidebar() {
 }
 
 function filterAndSearchOrganizations() {
+    const selectedSections = getDropdownSelection("resourceDropdown", sections);
+    const selectedCounties = getDropdownSelection("countyDropdown", counties);
 
-    searchOrganizations(document.getElementById("org-search").value)
+    const filteredOrganizations = applyOrganizationFilters(selectedCounties, selectedSections)
+    searchOrganizations(filteredOrganizations, document.getElementById("org-search").value)
 }
-function searchOrganizations(search_string="") {
+
+function getDropdownSelection(dropdownID, list) {
+    const searchString = "#" + dropdownID + " .btn-check:checked";
+
+    const selection = []
+    document.querySelectorAll(searchString).forEach(
+        el => selection.push(el.id));
+    return selection
+}
+
+function applyOrganizationFilters(selectedCounties, selectedSections) {
+    var filteredOrgs = orgs;
+    console.log("selectedCounties is " + selectedCounties)
+    if (selectedCounties != null && selectedCounties.length != 0) {
+        filteredOrgs = filteredOrgs.filter(org => {
+            return selectedCounties.includes(org.County)
+        })
+    }
+    if (selectedSections != null && selectedSections.length != 0) {
+        filteredOrgs = filteredOrgs.filter(org => {
+            return selectedSections.includes(org.Section)
+        })
+    }
+    console.log("size of filtered records: " + filteredOrgs.length)
+    return filteredOrgs;
+}
+
+function searchOrganizations(filteredOrganizations = orgs, search_string="") {
     console.log(search_string)
     search_string = document.getElementById("org-search").value
     searchMarkers.clearLayers();                
 
-    var searchResultOrgs = orgs.filter(org => {                                         // Create a new filtered organization list for the search
+    var searchResultOrgs = filteredOrganizations.filter(org => {                                         // Create a new filtered organization list for the search
         return Object.values(org).some(val => {                                         // Accept any org where the string value from any field
             return String(val).toLowerCase().includes(search_string.toLowerCase())      // Contains the search string
         })
@@ -257,13 +287,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 function populateGenericDropdown(ID, list) {
     for (const i in list) {
         document.getElementById(ID).innerHTML +=
-            `<li>
-                <a class="dropdown-item" href = "#" >
-                    <div class="form-check form-check-reverse">
-                        <label class="form-check-label" for="${list[i]}">${list[i]}</label>
-                        <input class="form-check-input" type="checkbox" value="${list[i]}" id="${list[i]}" />
-                    </div>
-                </a>
+            `<li class="w-100">
+                <input type="checkbox" class=" form-check-input dropdown-item btn-check w-100" id="${list[i]}" autocomplete="off">
+                <label class="btn btn-outline-secondary w-100 rounded-0 dropdown-button" for="${list[i]}">${list[i]}</label>
             </li> `;
     }
 }
@@ -283,5 +309,14 @@ function createClickEvents() {
             document.getElementById("org-search-enter").click();
         }
     });
+
+    // Add click handler for dynamic dropdown list elements
+    document.body.addEventListener('click', (event) => {
+        // Check if the clicked element has the specific class
+        if (event.target.classList.contains('dropdown-button')) {;
+            event.stopPropagation();
+        }
+    });
+
     document.getElementById("org-search-enter").addEventListener('click', e => filterAndSearchOrganizations())
 }
