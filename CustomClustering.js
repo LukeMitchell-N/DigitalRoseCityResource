@@ -24,7 +24,8 @@ function determineCurrentMaxClusterRadius(zoom) {
     }
 }
 
-export function createCustomCluster(cluster) {                        //Custom version of default iconCreateFunction
+//Custom version of default iconCreateFunction
+export function createCustomCluster(cluster) {                        
     var childCount = cluster.getChildCount();
 
     // Customized - Marker appearance changes whether or not map is at high zoom settings
@@ -68,7 +69,7 @@ export function createCustomCluster(cluster) {                        //Custom v
         let multiIcon = './icons/diamond.svg'
         return new L.DivIcon({
             html: '<img src = "' + multiIcon + '" style="width: ' + smallestPointSize + 'px; height: ' + smallestPointSize + 'px;">',
-            className: 'leaflet-marker-icon leaflet-zoom-animated leaflet-interactive',
+            className: 'leaflet-marker-icon leaflet-zoom-animated leaflet-interactive black-to-green',
             iconSize: smallestPointSize
         });
     }

@@ -66,3 +66,7 @@
     .marker-cluster span {
         line-height: 30px;
     }
+
+.black-to-green {
+    filter: invert(75%) sepia(9%) saturate(3222%) hue-rotate(51deg) brightness(97%) contrast(79%);
+}
