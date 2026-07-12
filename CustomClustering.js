@@ -29,7 +29,7 @@ export function createCustomCluster(cluster) {
     var childCount = cluster.getChildCount();
 
     // Customized - Marker appearance changes whether or not map is at high zoom settings
-    var pointMarker = (map.getZoom() >= zoomSwitchPointMarker)
+    var pointMarker = false;// (map.getZoom() >= zoomSwitchPointMarker)
       
 
     /*
