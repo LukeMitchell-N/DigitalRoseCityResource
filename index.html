@@ -30,7 +30,7 @@
 <body>
     <div class="d-flex flex-row h-100">
         <div id="sidebar" class="d-flex flex-column h-100 border-end ">
-            <div id="sidebar-upper-box" class="nav-section d-flex flex-column flex-grow-1 ">
+            <div id="sidebar-upper-box" class="vstack gap-1 nav-section d-flex flex-column flex-grow-1 ">
                 <div id="search-row" class="d-flex flex-row flex-shrink-0">
                     <button type="button" class="icon-button col-auto btn flex-auto" onclick="toggleSidebar()">
                         <!-- <i class="fa-solid fa-bars ui-button button-lt"></i> -->
@@ -41,14 +41,14 @@
                     </div>
                 </div>
 
-                <div class="dropdown flex-row hide-on-collapse">
+                <div class="d-flex dropdown flex-row hide-on-collapse">
                     <button id="countyDropdownButton" class="btn btn-secondary btn-sm dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         County
                     </button>
                     <ul id="countyDropdown" class="dropdown-menu checkbox-dropdown allow-focus w-100 p-0" aria-labelledby="countyDropdownButton">
                     </ul>
                 </div>
-                <div class="dropdown flex-row hide-on-collapse">
+                <div class="d-flex dropdown flex-row hide-on-collapse">
                     <button id="resourceDropdownButton" class="btn btn-secondary btn-sm dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Resource Type
                     </button>
@@ -56,10 +56,12 @@
                     <ul id="resourceDropdown" class="dropdown-menu checkbox-dropdown allow-focus w-100 p-0" aria-labelledby="resourceDropdownButton">
                     </ul>
                 </div>
-
-                <div class="flex-row hide-on-collapse">
-                    <button id="org-search-enter" class="btn btn-primary btn-sm w-100">
+                <div id="search-buttons" class="flex-row d-flex hide-on-collapse">
+                    <button id="org-search-enter" class="btn btn-primary btn-sm flex-fill flex-grow-1 flex-shrink-0 terminated ">
                         Filter
+                    </button>
+                    <button id="org-search-clear" class="btn btn-danger btn-sm flex-shrink-1 terminating">
+                        Clear
                     </button>
                 </div>
                 <div id="search-results" class="flex-grow-1 w-100 overflow-auto hide-on-collapse">

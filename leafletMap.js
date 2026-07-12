@@ -13,8 +13,6 @@ async function createMapContent() {
         //createLegend();
     map.on('zoomend', onZoomEnd);
                 //return later - then necessary?
-    console.log("finished with createmapcontent")
-    console.log("counties is ", counties)
 }
 function createMap() {
     map = L.map('myMap').setView([45.5152, -122.6784], 13);
@@ -50,8 +48,6 @@ function addOrgsToMap() {
         }
     };
     allMarkers.addTo(map);
-    console.log(counties);
-    console.log(sections);
 }
 //Get the names of each sheet
 //This is also the list of counties needed for the county filtering
@@ -159,6 +155,13 @@ function filterAndSearchOrganizations() {
     searchOrganizations(filteredOrganizations, document.getElementById("org-search").value)
 }
 
+function clearFilters() {
+    document.getElementById("org-search").value = "";
+    document.querySelectorAll(".btn-check:checked").forEach(
+        el => el.checked = false);
+    searchOrganizations();
+}
+
 function getDropdownSelection(dropdownID, list) {
     const searchString = "#" + dropdownID + " .btn-check:checked";
 
@@ -170,7 +173,6 @@ function getDropdownSelection(dropdownID, list) {
 
 function applyOrganizationFilters(selectedCounties, selectedSections) {
     var filteredOrgs = orgs;
-    console.log("selectedCounties is " + selectedCounties)
     if (selectedCounties != null && selectedCounties.length != 0) {
         filteredOrgs = filteredOrgs.filter(org => {
             return selectedCounties.includes(org.County)
@@ -181,16 +183,14 @@ function applyOrganizationFilters(selectedCounties, selectedSections) {
             return selectedSections.includes(org.Section)
         })
     }
-    console.log("size of filtered records: " + filteredOrgs.length)
     return filteredOrgs;
 }
 
 function searchOrganizations(filteredOrganizations = orgs, search_string="") {
-    console.log(search_string)
     search_string = document.getElementById("org-search").value
     searchMarkers.clearLayers();                
 
-    var searchResultOrgs = filteredOrganizations.filter(org => {                                         // Create a new filtered organization list for the search
+    var searchResultOrgs = filteredOrganizations.filter(org => {                        // Create a new filtered organization list for the search
         return Object.values(org).some(val => {                                         // Accept any org where the string value from any field
             return String(val).toLowerCase().includes(search_string.toLowerCase())      // Contains the search string
         })
@@ -279,7 +279,8 @@ function onZoomEnd() {
 document.addEventListener('DOMContentLoaded', function (event) {
     createMapContent().then((p) => {
         createClickEvents();
-        populateDropdowns();
+        populateGenericDropdown("countyDropdown", counties);        // Fill in filter dropdowns with correct county and section info
+        populateGenericDropdown("resourceDropdown", sections);
     })
 });
 
@@ -294,11 +295,7 @@ function populateGenericDropdown(ID, list) {
     }
 }
 
-// Fill in filter dropdowns with correct county and section info
-function populateDropdowns() {
-    populateGenericDropdown("countyDropdown", counties);
-    populateGenericDropdown("resourceDropdown", sections);
-}
+
 
 // Set up click events
 function createClickEvents() {
@@ -318,5 +315,7 @@ function createClickEvents() {
         }
     });
 
+    
     document.getElementById("org-search-enter").addEventListener('click', e => filterAndSearchOrganizations())
+    document.getElementById("org-search-clear").addEventListener('click', e => clearFilters())
 }

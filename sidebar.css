@@ -56,10 +56,6 @@ html, body {
 .search-bar {
     /*height: 40px;*/
 }
- .search-bar.search-bar-left {
-     border-top-right-radius: 0px;
-     border-bottom-right-radius: 0px;
- }
 
 
 .btn , .icon-button {
@@ -69,6 +65,10 @@ html, body {
     padding-right: 6px;
 }
 
+.terminated {
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
 
 .terminating {
     border-top-left-radius: 0px !important;
