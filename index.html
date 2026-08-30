@@ -15,20 +15,21 @@
     <script type='text/javascript'>
         var map = null;     /// Global variable
     </script>
-    <script type="module" src="CustomClustering.js"></script>
-    <link rel="stylesheet" href="CustomClustering.css">
     <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
     <!-- Bootstrap: -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     <!-- FontAwesome: -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
-    <!-- Leaflet EasyButton -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
-    <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
 
+    <!-- Custom scripts and styles-->
+    <script type="module" src="leafletMap.js"></script>
+    <script type="module" src="./icons/icons.js"></script>
+    <script type="module" src="CustomClustering.js"></script>
+    <link rel="stylesheet" href="CustomClustering.css">
     <link rel="stylesheet" href="sidebar.css">
     <link rel="stylesheet" href="leafletPageStyle.css">
-    <script type="module" src="./icons/icons.js"></script>
+
 </head>
 <body>
     <div class="d-flex flex-row h-100">
@@ -36,7 +37,6 @@
             <div id="sidebar-upper-box" class="vstack gap-1 nav-section d-flex flex-column flex-grow-1 ">
                 <div id="search-row" class="d-flex flex-row flex-shrink-0">
                     <button id="sidebar-toggle" type="button" class="icon-button col-auto btn flex-auto">
-                        <!-- <i class="fa-solid fa-bars ui-button button-lt"></i> -->
                         <img src="./icons/bars-solid.svg" alt="" aria-hidden="true" width="30" height="30" class="ui-button button-lt svg">
                     </button>
                     <div class="col flex-grow-1 hide-on-collapse" style="margin-left: 3px;">
@@ -107,10 +107,8 @@
 
         <div class="main-content flex-grow-1">
             <div id="myMap" class="container-fluid ">
-                <script type="module" src="leafletMap.js"></script>
             </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>
 </html>
