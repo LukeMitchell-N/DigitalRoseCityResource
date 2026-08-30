@@ -5,25 +5,22 @@ const orgs =[], counties = [], sections = [];
 import {allMarkers, searchMarkers, createCustomCluster} from "./CustomClustering.js"      
 import { icons } from "./icons/icons.js"
 
+
+// #################################################  Map setup  ########################################################
+
 //Setting up the map
-async function createMapContent() {
+async function createMap() {
     await fetchGoogleSheetData()
-    createMap();
-    addOrgsToMap();
-        //createLegend();
-    map.on('zoomend', onZoomEnd);
-                //return later - then necessary?
-}
-function createMap() {
-    map = L.map('myMap').setView([45.5152, -122.6784], 13);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+
+    map = L.map('myMap').setView([45.5215, -122.6682], 13);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png?key=cb1_2jrm_1_0d44df88927d5e30fd03a99b', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         maxZoom: 19,
     }).addTo(map);
+    addOrgsToMap();
 }
+
 function addOrgsToMap() {
-    //console.log(typeof orgs)
-    //console.log(orgs)
     for (const org of orgs) {
         let marker = null;                                          //One marker per organization - init null
         if (org.Coords && org.Coords.match('[0-9].*')) {            //Catch lat/lng values that don't start with a number
@@ -49,6 +46,7 @@ function addOrgsToMap() {
     };
     allMarkers.addTo(map);
 }
+
 //Get the names of each sheet
 //This is also the list of counties needed for the county filtering
 async function getSheetNames(spreadsheetId, apiKey) {
@@ -112,16 +110,66 @@ const rowsToObjects = (rows, sheet) => {
     });
 }
 
+// ###################################################  Populate sidebar detail  ######################################################
 
-/*
-function createLegend() {
-    console.log("trying to set up div overlay")
-    newDivOverlay = L.DivOverlay(interactive = true, content="<div style='backgroundcolor: blue'></div>");
-    newDivOverlay.openOn(map)
+// Fill in detail of sidebar dropdowns from the data loaded onto the map
+function populateGenericDropdown(ID, list) {
+    for (const i in list) {
+        document.getElementById(ID).innerHTML +=
+            `<li class="w-100">
+                <input type="checkbox" class=" form-check-input dropdown-item btn-check w-100" id="${list[i]}" autocomplete="off">
+                <label class="btn btn-outline-secondary w-100 rounded-0 dropdown-button" for="${list[i]}">${list[i]}</label>
+            </li> `;
+    }
 }
-*/
 
-// Map functionality
+
+// Set up click events for sidebar (html) buttons
+function createSidebarClickEvents() {
+    document.getElementById("org-search").addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {                                        // If the user presses "Enter" while in the search box
+            document.getElementById("org-search-enter").click();                //Act as if the enter button was clicked
+        }
+    });
+
+    // Add click handler for dynamic dropdown list elements
+    document.body.addEventListener('click', (event) => {
+        if (event.target.classList.contains('dropdown-button')) {           // Check if the clicked element has the specific class
+            event.stopPropagation();                                            //Prevent other behavior
+        }
+    });
+
+    document.getElementById("org-search-enter").addEventListener('click', e => filterAndSearchOrganizations())
+    document.getElementById("org-search-clear").addEventListener('click', e => clearFilters())
+    document.getElementById("sidebar-toggle").addEventListener('click', e => toggleSidebar())
+}
+
+
+// ###################################################  Create buttons  ######################################################
+
+function addMapButtons() {
+    var leafletTopLeft = document.querySelector(".leaflet-top.leaflet-left");
+    leafletTopLeft.innerHTML += `<div class="leaflet-bar leaflet-control">
+                                    <a id="locator-button" class="leaflet-control-zoom" role="button" style="outline: none;">
+                                        <span>
+                                            <img src="./icons/locator.svg" style="width: 80%;">
+                                        </span>
+                                    </a>
+                                </div>`
+    document.getElementById("locator-button").addEventListener("click", locateUser)
+
+    var leafletTopRight = document.querySelector(".leaflet-top.leaflet-right");
+    leafletTopRight.innerHTML += `<div class="leaflet-bar leaflet-control">
+                                    <a id="locator-button" class="leaflet-control-zoom" role="button" style="outline: none;">
+                                        <span>
+                                            <img src="./icons/legend.svg" style="width: 70%;">
+                                        </span>
+                                    </a>
+                                </div>`
+}
+
+// ##################################################  Map functionality  ####################################################
+
 function markerClick(e) {
     loadSidebarOrgDetail(e.target.Organization);
     focusOnCoords(e.target.Organization["Lat"], e.target.Organization["Lng"]);
@@ -147,6 +195,18 @@ function toggleSidebar() {
     document.querySelector('#sidebar').classList.toggle('collapsed');
 }
 
+function locateUser() {
+    function onLocationFound(e) {
+        L.marker(e.latlng).addTo(map)
+    }
+    function onLocationError(e) {
+        alert(e.message);
+    }
+    map.on('locationfound', onLocationFound);
+    map.on('locationerror', onLocationError);
+    map.locate({ setView: true, flyTo: true, maxZoom: 16 });
+}
+
 function filterAndSearchOrganizations() {
     const selectedSections = getDropdownSelection("resourceDropdown", sections);
     const selectedCounties = getDropdownSelection("countyDropdown", counties);
@@ -156,10 +216,10 @@ function filterAndSearchOrganizations() {
 }
 
 function clearFilters() {
-    document.getElementById("org-search").value = "";
-    document.querySelectorAll(".btn-check:checked").forEach(
+    document.getElementById("org-search").value = "";                   //Clear search terms
+    document.querySelectorAll(".btn-check:checked").forEach(            //Uncheck all checked menu items
         el => el.checked = false);
-    searchOrganizations();
+    searchOrganizations();                                              //Show all organizations by searching with no filter
 }
 
 function getDropdownSelection(dropdownID, list) {
@@ -202,18 +262,11 @@ function searchOrganizations(filteredOrganizations = orgs, search_string="") {
         }
     });
 
-    // Swap the active marker layers
-    map.removeLayer(allMarkers);
+    map.removeLayer(allMarkers);                                                // Swap the active marker layers
     map.addLayer(searchMarkers);      
-
-    // Build results list
-    addOrgsToResultsPane(searchResultOrgs);
-
-    // Pan/zoom to show all results
-    map.fitBounds(searchMarkers.getBounds())
-
-    // Remove any previous entry in the organization detail pane
-    document.getElementById("sidebar-lower-box").classList.add('hidden')
+    addOrgsToResultsPane(searchResultOrgs);                                     // Build results list
+    map.fitBounds(searchMarkers.getBounds())                                    // Pan/zoom to show all results
+    document.getElementById("sidebar-lower-box").classList.add('hidden')        // Remove any previous entry in the organization detail pane
 }
 
 function addOrgsToResultsPane(searchResultOrgs) {
@@ -224,15 +277,13 @@ function addOrgsToResultsPane(searchResultOrgs) {
         var elem = document.createElement("div")
         elem.innerHTML = `<a href="#">` + org["Org Name"] + `</a>`
         elem.addEventListener("click", e => {                               // When search result org link clicked
-            loadSidebarOrgDetail(org);                                      // Load it into the details pane
-            if (org.Coords && org.Coords.match('[0-9].*')) {                // If it has coordinates
+            loadSidebarOrgDetail(org);                                          // Load it into the details pane
+            if (org.Coords && org.Coords.match('[0-9].*')) {                    // If it has coordinates
                 focusOnCoords(org["Lat"], org["Lng"], 17)                          // Move the map to focus on it
             }
         })
         resultsParent.appendChild(elem);
     })
-
-
 }
 
 function focusOnCoords(lat, lng, zoom = null) {
@@ -264,58 +315,16 @@ function focusOnCoords(lat, lng, zoom = null) {
     }
 }
 
-var previousZoom;
 
-function onZoomStart() {
-    previousZoom = map.getZoom();
-}
-function onZoomEnd() {
-   
-}
-
-
+// ###################################################  Build the page  #####################################################
 
 // Call the function to fetch and display data
 document.addEventListener('DOMContentLoaded', function (event) {
-    createMapContent().then((p) => {
-        createClickEvents();
+    createMap().then((p) => {
         populateGenericDropdown("countyDropdown", counties);        // Fill in filter dropdowns with correct county and section info
         populateGenericDropdown("resourceDropdown", sections);
+        createSidebarClickEvents();
+        addMapButtons();
     })
 });
 
-
-function populateGenericDropdown(ID, list) {
-    for (const i in list) {
-        document.getElementById(ID).innerHTML +=
-            `<li class="w-100">
-                <input type="checkbox" class=" form-check-input dropdown-item btn-check w-100" id="${list[i]}" autocomplete="off">
-                <label class="btn btn-outline-secondary w-100 rounded-0 dropdown-button" for="${list[i]}">${list[i]}</label>
-            </li> `;
-    }
-}
-
-
-
-// Set up click events
-function createClickEvents() {
-    document.getElementById("org-search").addEventListener("keypress", function (event) {
-        // If the user presses the "Enter" key on the keyboard
-        if (event.key === "Enter") {
-            //Act as if the enter button was clicked
-            document.getElementById("org-search-enter").click();
-        }
-    });
-
-    // Add click handler for dynamic dropdown list elements
-    document.body.addEventListener('click', (event) => {
-        // Check if the clicked element has the specific class
-        if (event.target.classList.contains('dropdown-button')) {;
-            event.stopPropagation();
-        }
-    });
-
-    
-    document.getElementById("org-search-enter").addEventListener('click', e => filterAndSearchOrganizations())
-    document.getElementById("org-search-clear").addEventListener('click', e => clearFilters())
-}
