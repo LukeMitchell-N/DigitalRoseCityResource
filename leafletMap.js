@@ -1,7 +1,8 @@
 const spreadsheetId = '1dsL9BS4IJMr-5jYSyyS_bTYV82wVRCtZrzOZoJUXgpY';
 const apiKey = 'AIzaSyAb5dMPDAJ19o2-gxbyzvb8ChewsG8JxzM';
-//const sheetNames = ['Multnomah County', 'Clackamas County', 'Washington County'];
-const orgs =[], counties = [], sections = [];
+const orgs = [], counties = [], sections = [];
+let sidebar, userLocationMarker = null;
+let animating = false;      // Is sidebar actively expanding/collapsing
 import {allMarkers, searchMarkers, createCustomCluster} from "./CustomClustering.js"      
 import { icons } from "./icons/icons.js"
 
@@ -12,12 +13,14 @@ import { icons } from "./icons/icons.js"
 async function createMap() {
     await fetchGoogleSheetData()
 
-    map = L.map('myMap').setView([45.5215, -122.6682], 13);
+    map = L.map('myMap');                         
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png?key=cb1_2jrm_1_0d44df88927d5e30fd03a99b', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         maxZoom: 19,
-    }).addTo(map);
-    addOrgsToMap();
+    }).addTo(map);                                                  // Load tile layer
+    focusOnCoords(45.5215, -122.6682, 12);                          // Position map over Portland
+    addOrgsToMap();                                                 // Load org info and add points on map
+    searchOrganizations(orgs, "", false);                             // Search to show all orgs in sidebar
 }
 
 function addOrgsToMap() {
@@ -150,7 +153,7 @@ function createSidebarClickEvents() {
 function addMapButtons() {
     var leafletTopLeft = document.querySelector(".leaflet-top.leaflet-left");
     leafletTopLeft.innerHTML += `<div class="leaflet-bar leaflet-control">
-                                    <a id="locator-button" class="leaflet-control-zoom" role="button" style="outline: none;">
+                                    <a id="locator-button">
                                         <span>
                                             <img src="./icons/locator.svg" style="width: 80%;">
                                         </span>
@@ -160,12 +163,13 @@ function addMapButtons() {
 
     var leafletTopRight = document.querySelector(".leaflet-top.leaflet-right");
     leafletTopRight.innerHTML += `<div class="leaflet-bar leaflet-control">
-                                    <a id="locator-button" class="leaflet-control-zoom" role="button" style="outline: none;">
+                                    <a id="legend">
                                         <span>
                                             <img src="./icons/legend.svg" style="width: 70%;">
                                         </span>
                                     </a>
                                 </div>`
+    document.getElementById("legend").addEventListener("click", openLegend)
 }
 
 // ##################################################  Map functionality  ####################################################
@@ -192,19 +196,58 @@ function loadSidebarOrgDetail(org) {
 }
 
 function toggleSidebar() {
-    document.querySelector('#sidebar').classList.toggle('collapsed');
+
+    sidebar.classList.toggle('collapsed');
+
+    const controls = document.querySelector('.leaflet-control-container .leaflet-top.leaflet-left');
+    controls.classList.toggle('collapsed');
 }
+
 
 function locateUser() {
     function onLocationFound(e) {
-        L.marker(e.latlng).addTo(map)
+        if (userLocationMarker) {
+            userLocationMarker.lat = e.latlng.lat;
+            userLocationMarker.lng = e.latlng.lng;
+        }
+        else {
+            userLocationMarker = L.marker(e.latlng);
+            userLocationMarker.addTo(map)
+        }     
+        focusOnCoords(e.latlng.lat, e.latlng.lng, 17)
     }
     function onLocationError(e) {
         alert(e.message);
     }
     map.on('locationfound', onLocationFound);
     map.on('locationerror', onLocationError);
-    map.locate({ setView: true, flyTo: true, maxZoom: 16 });
+    map.locate({ setView: false, flyTo: false});
+}
+
+var legendElement = document.createElement("a")
+legendElement.innerHTML += `<div class="d-flex flex-column"></div>`
+
+
+function openLegend() {
+    var legend = document.getElementById("legend");
+    var legendHtmlButton = legend.innerHTML
+    console.log(legendHtmlButton)
+    for (let orgType in icons) {
+        console.log(orgType)
+        var rowHTML = ` <div class="d-flex flex-row flex-shrink-0">
+                            <a class="col-auto flex-auto">
+                                <span>
+                                    <img src=` + icons[orgType] + `>
+                                </span>
+                            </a>
+                            <div class="col flex-grow-1">
+                                 ` + orgType + `
+                            </div>
+                        </div>`
+                   
+        legendElement.innerHTML += rowHTML;
+    }
+    legend.innerHTML = legendElement.innerHTML
 }
 
 function filterAndSearchOrganizations() {
@@ -246,7 +289,7 @@ function applyOrganizationFilters(selectedCounties, selectedSections) {
     return filteredOrgs;
 }
 
-function searchOrganizations(filteredOrganizations = orgs, search_string="") {
+function searchOrganizations(filteredOrganizations = orgs, search_string="", moveMap=true) {
     search_string = document.getElementById("org-search").value
     searchMarkers.clearLayers();                
 
@@ -265,7 +308,16 @@ function searchOrganizations(filteredOrganizations = orgs, search_string="") {
     map.removeLayer(allMarkers);                                                // Swap the active marker layers
     map.addLayer(searchMarkers);      
     addOrgsToResultsPane(searchResultOrgs);                                     // Build results list
-    map.fitBounds(searchMarkers.getBounds())                                    // Pan/zoom to show all results
+    if (moveMap) {                                                              // If moving the map for this search
+        map.fitBounds(searchMarkers.getBounds(), {                                  // Adjust map to show all results    
+            paddingTopLeft: [sidebar.offsetWidth, 0],
+            animate: true,
+            duration: .25,
+            easeLinearity: 0.5,
+            noMoveStart: false
+        })
+    }
+                                        
     document.getElementById("sidebar-lower-box").classList.add('hidden')        // Remove any previous entry in the organization detail pane
 }
 
@@ -287,32 +339,19 @@ function addOrgsToResultsPane(searchResultOrgs) {
 }
 
 function focusOnCoords(lat, lng, zoom = null) {
-    if (zoom) {
-        map = map.flyTo([lat, lng], zoom,
-            {
-                animate: true,
-                duration: 1,
-                easeLinearity: 0.5,
-                noMoveStart: false
-            }
-        );
+    if (!zoom) {
+        zoom = map.getZoom();
     }
-    else {
-        map = map.setView([lat, lng], map.getZoom(), {
-            pan: {
-                animate: true,
-                duration: .25,
-                easeLinearity: 0.5,
-                noMoveStart: false
-            },
-            zoom: {
-                animate: true,
-                duration: .25,
-                easeLinearity: 0.5,
-                noMoveStart: false
-            }
-        });
-    }
+        
+    let bounds = L.latLngBounds([lat, lng], [lat, lng])
+    map = map.fitBounds(bounds,{                                // fitBounds rather than setView to allow for variable sidebar width
+        maxZoom: zoom,
+        paddingTopLeft: [sidebar.offsetWidth, 0],
+        animate: true,
+        duration: .25,
+        easeLinearity: 0.5,
+        noMoveStart: false
+    });
 }
 
 
@@ -320,6 +359,7 @@ function focusOnCoords(lat, lng, zoom = null) {
 
 // Call the function to fetch and display data
 document.addEventListener('DOMContentLoaded', function (event) {
+    sidebar = document.getElementById('sidebar');
     createMap().then((p) => {
         populateGenericDropdown("countyDropdown", counties);        // Fill in filter dropdowns with correct county and section info
         populateGenericDropdown("resourceDropdown", sections);
