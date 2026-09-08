@@ -336,6 +336,9 @@ function addOrgsToResultsPane(searchResultOrgs) {
         })
         resultsParent.appendChild(elem);
     })
+    if (resultsParent.classList.contains("d-none")) {
+        resultsParent.classList.toggle("d-none");
+    }
 }
 
 function focusOnCoords(lat, lng, zoom = null) {

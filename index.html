@@ -34,8 +34,8 @@
 <body>
     <div class="main-content h-100 w-100">
         <div id="myMap" class=""></div>
-        <div id="sidebar" class="overlay h-100 border-end">
-            <div id="sidebar-upper-box" class="vstack gap-1 nav-section d-flex flex-column flex-grow-1 ">
+        <div id="sidebar" class="overlay h-100 border-end d-flex flex-column">
+            <div id="sidebar-upper-box" class="vstack gap-1 nav-section flex-column">
                 <div id="search-row" class="d-flex flex-row flex-shrink-0">
                     <button id="sidebar-toggle" type="button" class="icon-button col-auto btn flex-auto">
                         <img src="./icons/bars-solid.svg" alt="" aria-hidden="true" width="30" height="30" class="ui-button button-lt svg">
@@ -68,13 +68,12 @@
                         Clear
                     </button>
                 </div>
-                <div id="search-results" class="flex-grow-1 w-100 overflow-auto hide-on-collapse">
+                <div id="search-results" class="w-100 overflow-auto hide-on-collapse d-none">
                 </div>
 
             </div>
 
             <div id="sidebar-lower-box" class="row-1 nav-section overflow-auto flex-grow-1 hidden hide-on-collapse">
-                <div class="overflow-auto h-100">
                     <div class="flex-column">
                         <div class="row" style="padding-top: 10px;">
                             <div class="col-auto">
@@ -102,7 +101,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
             </div>
         </div>
     </div>
