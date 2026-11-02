@@ -13,7 +13,7 @@
             crossorigin=""></script>
     <!-- Leaflet MarkerCluster Custom Behavior: -->
     <script type='text/javascript'>
-        var map = null;     /// Global variable
+        var map = null;     /// Global leaflet map variable
     </script>
     <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
     <!-- Bootstrap: -->
@@ -49,7 +49,7 @@
                     <button id="countyDropdownButton" class="btn btn-secondary btn-sm dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         County
                     </button>
-                    <ul id="countyDropdown" class="dropdown-menu checkbox-dropdown allow-focus w-100 p-0" aria-labelledby="countyDropdownButton">
+                    <ul id="countyDropdown" class="dropdown-menu checkbox-dropdown allow-focus shadow-sm w-100 p-0" aria-labelledby="countyDropdownButton">
                     </ul>
                 </div>
                 <div class="d-flex dropdown flex-row hide-on-collapse">
@@ -57,7 +57,7 @@
                         Resource Type
                     </button>
 
-                    <ul id="resourceDropdown" class="dropdown-menu checkbox-dropdown allow-focus w-100 p-0" aria-labelledby="resourceDropdownButton">
+                    <ul id="resourceDropdown" class="dropdown-menu checkbox-dropdown allow-focus shadow-sm w-100 p-0" aria-labelledby="resourceDropdownButton">
                     </ul>
                 </div>
                 <div id="search-buttons" class="flex-row d-flex hide-on-collapse">

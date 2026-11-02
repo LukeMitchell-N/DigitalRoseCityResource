@@ -2,6 +2,7 @@ const spreadsheetId = '1dsL9BS4IJMr-5jYSyyS_bTYV82wVRCtZrzOZoJUXgpY';
 const apiKey = 'AIzaSyAb5dMPDAJ19o2-gxbyzvb8ChewsG8JxzM';
 const orgs = [], counties = [], sections = [];
 let sidebar, userLocationMarker = null;
+let orientation = "landscape";
 let animating = false;      // Is sidebar actively expanding/collapsing
 import {allMarkers, searchMarkers, createCustomCluster} from "./CustomClustering.js"      
 import { icons } from "./icons/icons.js"
@@ -176,12 +177,15 @@ function addMapButtons() {
 
 function markerClick(e) {
     loadSidebarOrgDetail(e.target.Organization);
-    focusOnCoords(e.target.Organization["Lat"], e.target.Organization["Lng"]);
+    focusOnCoords(e.target.Organization["Lat"], e.target.Organization["Lng"]);              // to do - add short wait so that coords center after sidebar done expanding
 }
 
 function loadSidebarOrgDetail(org) {
     // Grab relevant information from the target clicked marker
     // Use the org info to populate the correct fields in the organization detail pane
+    if (getOrientation() == "portrait") {
+        document.getElementById("sidebar-upper-box").classList.add("hidden");
+    }
     document.getElementById("sidebar-lower-box").classList.remove("hidden");
     document.getElementById("organization-name").innerHTML = org["Org Name"]
     document.getElementById("organization-address").innerHTML = org["Address"]
@@ -327,6 +331,7 @@ function addOrgsToResultsPane(searchResultOrgs) {
     var resultsList = []
     searchResultOrgs.forEach(org => {
         var elem = document.createElement("div")
+        elem.classList.add("search-result");
         elem.innerHTML = `<a href="#">` + org["Org Name"] + `</a>`
         elem.addEventListener("click", e => {                               // When search result org link clicked
             loadSidebarOrgDetail(org);                                          // Load it into the details pane
@@ -357,6 +362,22 @@ function focusOnCoords(lat, lng, zoom = null) {
     });
 }
 
+// ###################################################  Add mobile compatibility  #####################################################
+document.addEventListener('resize', e => getOrientation());
+
+window.onresize = getOrientation;
+
+function getOrientation() {
+    const height = window.innerHeight;
+    const width = window.innerWidth;
+
+    if (width > height) {
+        return "landscape";
+    }
+    else {
+        return "portrait";
+    }
+}
 
 // ###################################################  Build the page  #####################################################
 

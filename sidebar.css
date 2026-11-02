@@ -15,122 +15,214 @@ html, body {
     height: 100%;
 }
 
-#sidebar {
-    position: absolute;
-    left: 0;
-    top: 0;
-    overflow: hidden;
-    z-index: 1000;
-    padding: 10px;
-    width: var(--sidebar-width);
-    min-width: 0; /* important */
-    max-width: none; /* important */
-    max-height: 100%;
-    background: linear-gradient(135deg, #1a1c2e 0%, #16181f 100%);
-    transition: width var(--collapse-time) ease;
-}
-
-    #sidebar.collapsed {
-        width: var(--sidebar-width-collapsed);
-        min-width: var(--sidebar-width-collapsed);
-    }
-    #sidebar * {
-        transition: opacity var(--collapse-time) ease;
+@media (orientation: landscape){
+    #sidebar {
+        position: absolute;
+        left: 0;
+        top: 0;
+        overflow: hidden;
+        z-index: 1000;
+        padding: 10px;
+        width: var(--sidebar-width);
+        min-width: 0; /* important */
+        max-width: none; /* important */
+        max-height: 100%;
+        background: black;
+        transition: width var(--collapse-time) ease;
     }
 
-.leaflet-control-container .leaflet-top.leaflet-left {
-    left: var(--sidebar-width);
-    top: 0px;
-    transition: left var(--collapse-time) ease;
-}
-    .leaflet-control-container .leaflet-top.leaflet-left.collapsed {
-        left: var(--sidebar-width-collapsed);
+        #sidebar.collapsed {
+            width: var(--sidebar-width-collapsed);
+            min-width: var(--sidebar-width-collapsed);
+        }
+
+        #sidebar * {
+            transition: opacity var(--collapse-time) ease;
+        }
+    .leaflet-control-container .leaflet-top.leaflet-left {
+        left: var(--sidebar-width);
+        top: 0px;
+        transition: left var(--collapse-time) ease;
     }
 
-.row {
-    margin: 0 !important;
-    padding: 0;
+        .leaflet-control-container .leaflet-top.leaflet-left.collapsed {
+            left: var(--sidebar-width-collapsed);
+        }
+
+    .row {
+        margin: 0 !important;
+        padding: 0;
+    }
+
+    #sidebar-upper-box {
+        flex: 0 2 auto; /* grow and shrink normally */
+        min-height: 50%; /* never shrink below 50% */
+        overflow: hidden; /* keeps layout clean */
+    }
+
+    #sidebar-lower-box {
+        border-radius: 5px;
+        background-color: #e38c64;
+        flex: 2 0 50%; /* can shrink to 0, can grow up to 50% */
+        max-height: 50%; /* never exceed 50% */
+        overflow: auto;
+    }
+
+        #sidebar-lower-box.hidden {
+            flex: 2 0 0;
+            max-height: 0;
+            overflow: hidden;
+        }
 }
 
+@media (orientation: portrait) {
+    #sidebar {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        overflow: auto;
+        z-index: 1000;
+        padding: 10px;
+        max-height: 40%;
+        background: black;
+    }
+
+    .hidden {
+        opacity: 0;
+        display: none;
+    }
+
+    #sidebar-upper-box {
+        flex: 0 2 auto; /* grow and shrink normally */
+        overflow: hidden; /* keeps layout clean */
+    }
+
+    #sidebar-lower-box {
+        border-radius: 5px;
+        background-color: #e38c64;
+        flex: 2 0 100%; /* can shrink to 0, can grow up to 100% */
+        max-height: 100%;
+        overflow: auto;
+    }
+
+        #sidebar-lower-box.hidden {
+            flex: 2 0 0;
+            max-height: 0;
+            overflow: hidden;
+        }
+}
 
 .dropdown-menu {
     max-height: 200px;
     max-width: 100%;
     overflow-y: auto;
     font-size: 12px;
-    border-width: 2px;
-    border-radius: 0px;
-    border-color: cadetblue;
+    border: none;
 }
 
 
-.btn , .icon-button {
-    padding-top: 0px;
-    padding-bottom: 0px;
-    padding-left: 6px;
-    padding-right: 6px;
+.btn, .icon-button {
+padding-top: 0px;
+padding-bottom: 0px;
+padding-left: 6px;
+padding-right: 6px;
+}
+
+.dropdown-toggle {
+    border: none;
+}
+
+.btn-secondary {
+    background: #eeeeee;
+    color: black;
+}
+.btn-secondary:hover {
+    background: #bbbbbb;
+    color: black;
+}
+
+#org-search-enter {
+    background: #8cb2bf !important;
+    border: none;
+}
+#org-search-enter:hover {
+    background: #66828c !important;
+    border: none;
+}
+
+#org-search-clear {
+    background: #d4302e !important;
+}
+#org-search-clear:hover {
+    background: #a12422 !important;
 }
 
 .terminated {
-    border-top-right-radius: 0px;
-    border-bottom-right-radius: 0px;
+border-top-right-radius: 0px;
+border-bottom-right-radius: 0px;
 }
 
 .terminating {
-    border-top-left-radius: 0px !important;
-    border-bottom-left-radius: 0px !important;
+border-top-left-radius: 0px !important;
+border-bottom-left-radius: 0px !important;
 }
 
 .ui-button {
-    transition: all 0.3s ease;
-    white-space: nowrap;
-    overflow: hidden;
-    font-size: 2em;
-    text-align: center;
+transition: all 0.3s ease;
+white-space: nowrap;
+overflow: hidden;
+font-size: 2em;
+text-align: center;
 }
-    .ui-button:hover {
-        transform: scale(1.2);
-    }
+
+.ui-button:hover {
+    transform: scale(1.2);
+}
 
     .ui-button.button-lt {
-        color: #a0a3bd;
+        color: #b04e20;
     }
-        .ui-button.button-lt.active {
-            color: #ffffff;
-        }
-        .ui-button.button-lt:hover {
-            color: #ffffff;
-        }
+
+    .ui-button.button-lt.active {
+        color: #ffffff;
+    }
+
+    .ui-button.button-lt:hover {
+        color: #ffffff;
+    }
+
     .ui-button.button-lt.svg {
         filter: brightness(0) saturate(100%) invert(77%) sepia(17%) saturate(354%) hue-rotate(196deg) brightness(85%) contrast(81%);
     }
+
         .ui-button.button-lt.svg:hover .ui-button.button-lt.svg.active {
             filter: brightness(0) saturate(100%) invert(99%) sepia(1%) saturate(0%) hue-rotate(92deg) brightness(104%) contrast(100%);
         }
 
-    .ui-button.button-dk {
-        color: #7D7D7D;
-    }
-        .ui-button.button-dk.active {
-            color: #000000;
-        }
-        .ui-button.button-dk:hover {
-            color: #000000;
-        }
-
-        .ui-button.button-dk.svg {
-            /*filter: brightness(0) saturate(100%) invert(49%) sepia(42%) saturate(13%) hue-rotate(48deg) brightness(92%) contrast(90%);*/
-        }
-            .ui-button.button-dk.svg:hover .ui-button.button-dk.svg.active {
-                /*filter: brightness(0) saturate(100%) invert(0%) sepia(100%) saturate(3300%) hue-rotate(75deg) brightness(106%) contrast(107%);*/
-            }
-
-
-
-.collapsed .hide-on-collapse {
-    opacity: 0;
+.ui-button.button-dk {
+    color: #7D7D7D;
 }
 
+    .ui-button.button-dk.active {
+        color: #000000;
+    }
+
+    .ui-button.button-dk:hover {
+        color: #000000;
+    }
+
+    .ui-button.button-dk.svg {
+        /*filter: brightness(0) saturate(100%) invert(49%) sepia(42%) saturate(13%) hue-rotate(48deg) brightness(92%) contrast(90%);*/
+    }
+
+        .ui-button.button-dk.svg:hover .ui-button.button-dk.svg.active {
+            /*filter: brightness(0) saturate(100%) invert(0%) sepia(100%) saturate(3300%) hue-rotate(75deg) brightness(106%) contrast(107%);*/
+        }
+
+
+    .collapsed .hide-on-collapse {
+        opacity: 0;
+    }
 
 
 #search-results {
@@ -141,24 +233,26 @@ html, body {
     margin-top: 5px !important;
     margin-bottom: 5px !important;
     padding: 5px;
-    color: #a0a3bd;
+    color: #5d636a
 }
 
-#sidebar-upper-box {
-    flex: 0 2 auto; /* grow and shrink normally */
-    min-height: 50%; /* never shrink below 40% */
-    overflow: hidden; /* keeps layout clean */
+.search-result {
+    width: 100%;
+    margin-bottom: 2px;
+    border-color:#303337;
+    border: none;
+    border-bottom: 2px;
+    border-bottom-style: solid;
+    cursor: pointer;
 }
-#sidebar-lower-box {
-    border-radius: 5px;
-    background-color: #ccd0e6;
-    flex: 2 0 50%; /* can shrink to 0, can grow up to 60% */
-    max-height: 50%; /* never exceed 60% */
-    overflow: auto;
+
+.search-result a {
+    text-decoration: none;
+    color: white;
 }
-    #sidebar-lower-box.hidden {
-        flex: 2 0 0;
-        max-height: 0;
-        overflow: hidden;
-    }
+
+    .search-result:hover a {
+        color: #b04e20
+    } 
+
 
