@@ -20,7 +20,7 @@ function determineCurrentMaxClusterRadius(zoom) {
         return 10;
     }
     else {
-        return 100;
+        return 150;
     }
 }
 

@@ -122,7 +122,7 @@ function populateGenericDropdown(ID, list) {
         document.getElementById(ID).innerHTML +=
             `<li class="w-100">
                 <input type="checkbox" class=" form-check-input dropdown-item btn-check w-100" id="${list[i]}" autocomplete="off">
-                <label class="btn btn-outline-secondary w-100 rounded-0 dropdown-button" for="${list[i]}">${list[i]}</label>
+                <label class="btn btn-secondary btn-outline-secondary w-100 rounded-0 dropdown-button" for="${list[i]}">${list[i]}</label>
             </li> `;
     }
 }

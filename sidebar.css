@@ -62,7 +62,8 @@ html, body {
 
     #sidebar-lower-box {
         border-radius: 5px;
-        background-color: #e38c64;
+        background-color: #b74f27;
+        color: white;
         flex: 2 0 50%; /* can shrink to 0, can grow up to 50% */
         max-height: 50%; /* never exceed 50% */
         overflow: auto;
@@ -136,10 +137,10 @@ padding-right: 6px;
     background: #eeeeee;
     color: black;
 }
-.btn-secondary:hover {
-    background: #bbbbbb;
-    color: black;
-}
+    .btn-secondary:hover, .btn-check:checked+.btn {
+        background: #bbbbbb !important;
+        color: black !important;
+    }
 
 #org-search-enter {
     background: #8cb2bf !important;
