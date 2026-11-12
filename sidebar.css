@@ -15,41 +15,41 @@ html, body {
     height: 100%;
 }
 
-@media (orientation: landscape){
-    #sidebar {
-        position: absolute;
-        left: 0;
-        top: 0;
-        overflow: hidden;
-        z-index: 1000;
-        padding: 10px;
-        width: var(--sidebar-width);
-        min-width: 0; /* important */
-        max-width: none; /* important */
-        max-height: 100%;
-        background: black;
-        transition: width var(--collapse-time) ease;
+
+#sidebar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    overflow: hidden;
+    z-index: 1000;
+    padding: 10px;
+    width: var(--sidebar-width);
+    min-width: 0; /* important */
+    max-width: none; /* important */
+    max-height: 100%;
+    background: black;
+    transition: width var(--collapse-time) ease;
+}
+
+    #sidebar.collapsed {
+        width: var(--sidebar-width-collapsed);
+        min-width: var(--sidebar-width-collapsed);
     }
 
-        #sidebar.collapsed {
-            width: var(--sidebar-width-collapsed);
-            min-width: var(--sidebar-width-collapsed);
-        }
-
-        #sidebar * {
-            transition: opacity var(--collapse-time) ease;
-        }
-    .leaflet-control-container .leaflet-top.leaflet-left {
+    #sidebar * {
+        transition: opacity var(--collapse-time) ease;
+    }
+    #sidebar .leaflet-control-container .leaflet-top.leaflet-left {
         left: var(--sidebar-width);
         top: 0px;
         transition: left var(--collapse-time) ease;
     }
 
-        .leaflet-control-container .leaflet-top.leaflet-left.collapsed {
+        #sidebar .leaflet-control-container .leaflet-top.leaflet-left.collapsed {
             left: var(--sidebar-width-collapsed);
         }
 
-    .row {
+    #sidebar .row {
         margin: 0 !important;
         padding: 0;
     }
@@ -69,49 +69,80 @@ html, body {
         overflow: auto;
     }
 
-        #sidebar-lower-box.hidden {
+        #sidebar-lower-box:not(:empty):not(:has(> :not(.hidden))) { /*if #sidebar-lower-box has all children hidden*/
             flex: 2 0 0;
             max-height: 0;
             overflow: hidden;
+            opacity: 0;
+            display: none;
         }
-}
-
-@media (orientation: portrait) {
-    #sidebar {
-        position: absolute;
-        bottom: 0;
-        width: 100%;
-        overflow: auto;
-        z-index: 1000;
-        padding: 10px;
-        max-height: 40%;
-        background: black;
+    #sidebar #org-detail-back {
+        display: none;
     }
-
-    .hidden {
-        opacity: 0;
+    #sidebar #org-detail.hidden{
         display: none;
     }
 
-    #sidebar-upper-box {
-        flex: 0 2 auto; /* grow and shrink normally */
-        overflow: hidden; /* keeps layout clean */
+
+
+#sidebar.mobile {
+    resize: vertical;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    padding: 0;
+    overflow: auto;
+    z-index: 1000;
+    background: transparent;
+    pointer-events: none
+}
+    #sidebar.mobile #sidebar-upper-box {
+        position: relative;
+        background: black;
+        flex: 0;
+        padding: 10px;
+        min-height: fit-content;
+        overflow-y: auto;
+        pointer-events: all;
     }
 
-    #sidebar-lower-box {
+    #sidebar.mobile #sidebar-toggle {
+        display: none;
+    }
+
+    #sidebar.mobile #sidebar-lower-box {
+        width: 100%;
+        height: 50%;
         border-radius: 5px;
-        background-color: #e38c64;
-        flex: 2 0 100%; /* can shrink to 0, can grow up to 100% */
-        max-height: 100%;
+        position: absolute;
+        bottom: 0px;
+        pointer-events: all;
+    }
+
+        #sidebar.mobile #sidebar-lower-box.collapsed {         
+            height: 0px;
+        }
+
+
+    #sidebar.mobile #org-detail {
+        background-color: #b74f27;
+        color: white;
+        height: 100%;
         overflow: auto;
     }
-
-        #sidebar-lower-box.hidden {
-            flex: 2 0 0;
-            max-height: 0;
-            overflow: hidden;
+    #sidebar.mobile #org-detail-back{
+        display: inherit ;
+    }
+        #search-results.hidden, #sidebar.mobile #org-detail.hidden, #org-detail:not(.hidden) + #search-results{
+            opacity: 0;
+            display: none;
         }
-}
+
+
+
+
 
 .dropdown-menu {
     max-height: 200px;
@@ -131,6 +162,10 @@ padding-right: 6px;
 
 .dropdown-toggle {
     border: none;
+}
+
+.flip-x {
+    transform: scaleX(-1);
 }
 
 .btn-secondary {
@@ -179,6 +214,10 @@ text-align: center;
 .ui-button:hover {
     transform: scale(1.2);
 }
+
+    .ui-button.flip-x:hover {
+        transform: scale(-1.2, 1.2);
+    }
 
     .ui-button.button-lt {
         color: #b04e20;

@@ -143,9 +143,18 @@ function createSidebarClickEvents() {
         }
     });
 
-    document.getElementById("org-search-enter").addEventListener('click', e => filterAndSearchOrganizations())
+    document.getElementById("org-search-enter").addEventListener('click', e => {
+        document.getElementById("sidebar-lower-box").classList.remove("collapsed");
+        document.getElementById("sidebar-lower-box").classList.remove("hidden");
+        document.getElementById("org-detail").classList.add("hidden");
+        filterAndSearchOrganizations()
+    })
+
     document.getElementById("org-search-clear").addEventListener('click', e => clearFilters())
     document.getElementById("sidebar-toggle").addEventListener('click', e => toggleSidebar())
+    document.getElementById("org-detail-back").addEventListener('click', e => {
+        document.getElementById("org-detail").classList.add("hidden");    
+    })
 }
 
 
@@ -179,35 +188,6 @@ function markerClick(e) {
     loadSidebarOrgDetail(e.target.Organization);
     focusOnCoords(e.target.Organization["Lat"], e.target.Organization["Lng"]);              // to do - add short wait so that coords center after sidebar done expanding
 }
-
-function loadSidebarOrgDetail(org) {
-    // Grab relevant information from the target clicked marker
-    // Use the org info to populate the correct fields in the organization detail pane
-    if (getOrientation() == "portrait") {
-        document.getElementById("sidebar-upper-box").classList.add("hidden");
-    }
-    document.getElementById("sidebar-lower-box").classList.remove("hidden");
-    document.getElementById("organization-name").innerHTML = org["Org Name"]
-    document.getElementById("organization-address").innerHTML = org["Address"]
-    document.getElementById("organization-section").innerHTML = org["Section"]
-    document.getElementById("organization-description").innerHTML = org["Description & Hours"]
-    document.getElementById("organization-phone").innerHTML = org["Phone Number"]
-
-    // If the sidebar is currently collapsed, open it.
-    if (document.querySelector('#sidebar').classList.contains("collapsed")) {
-        toggleSidebar();
-    }
-}
-
-function toggleSidebar() {
-
-    sidebar.classList.toggle('collapsed');
-
-    const controls = document.querySelector('.leaflet-control-container .leaflet-top.leaflet-left');
-    controls.classList.toggle('collapsed');
-}
-
-
 function locateUser() {
     function onLocationFound(e) {
         if (userLocationMarker) {
@@ -231,7 +211,6 @@ function locateUser() {
 var legendElement = document.createElement("a")
 legendElement.innerHTML += `<div class="d-flex flex-column"></div>`
 
-
 function openLegend() {
     var legend = document.getElementById("legend");
     var legendHtmlButton = legend.innerHTML
@@ -253,6 +232,24 @@ function openLegend() {
     }
     legend.innerHTML = legendElement.innerHTML
 }
+function focusOnCoords(lat, lng, zoom = null) {
+    if (!zoom) {
+        zoom = map.getZoom();
+    }
+
+    let bounds = L.latLngBounds([lat, lng], [lat, lng])
+    map = map.fitBounds(bounds, {                                // fitBounds rather than setView to allow for variable sidebar width
+        maxZoom: zoom,
+        paddingTopLeft: [sidebar.offsetWidth, 0],
+        animate: true,
+        duration: .25,
+        easeLinearity: 0.5,
+        noMoveStart: false
+    });
+}
+
+
+// ##################################################  Sidebar functionality  ####################################################
 
 function filterAndSearchOrganizations() {
     const selectedSections = getDropdownSelection("resourceDropdown", sections);
@@ -266,6 +263,7 @@ function clearFilters() {
     document.getElementById("org-search").value = "";                   //Clear search terms
     document.querySelectorAll(".btn-check:checked").forEach(            //Uncheck all checked menu items
         el => el.checked = false);
+    document.getElementById("org-detail").classList.add("hidden");
     searchOrganizations();                                              //Show all organizations by searching with no filter
 }
 
@@ -293,13 +291,13 @@ function applyOrganizationFilters(selectedCounties, selectedSections) {
     return filteredOrgs;
 }
 
-function searchOrganizations(filteredOrganizations = orgs, search_string="", moveMap=true) {
-    search_string = document.getElementById("org-search").value
+function searchOrganizations(filteredOrganizations = orgs, searchString="", moveMap=true) {
+    searchString = document.getElementById("org-search").value
     searchMarkers.clearLayers();                
 
     var searchResultOrgs = filteredOrganizations.filter(org => {                        // Create a new filtered organization list for the search
         return Object.values(org).some(val => {                                         // Accept any org where the string value from any field
-            return String(val).toLowerCase().includes(search_string.toLowerCase())      // Contains the search string
+            return String(val).toLowerCase().includes(searchString.toLowerCase())      // Contains the search string
         })
     });
 
@@ -321,14 +319,11 @@ function searchOrganizations(filteredOrganizations = orgs, search_string="", mov
             noMoveStart: false
         })
     }
-                                        
-    document.getElementById("sidebar-lower-box").classList.add('hidden')        // Remove any previous entry in the organization detail pane
 }
 
 function addOrgsToResultsPane(searchResultOrgs) {
     var resultsParent = document.getElementById("search-results");
     resultsParent.replaceChildren()
-    var resultsList = []
     searchResultOrgs.forEach(org => {
         var elem = document.createElement("div")
         elem.classList.add("search-result");
@@ -341,49 +336,62 @@ function addOrgsToResultsPane(searchResultOrgs) {
         })
         resultsParent.appendChild(elem);
     })
-    if (resultsParent.classList.contains("d-none")) {
-        resultsParent.classList.toggle("d-none");
+    if (resultsParent.classList.contains("hidden")) {
+        resultsParent.classList.toggle("hidden");
     }
 }
 
-function focusOnCoords(lat, lng, zoom = null) {
-    if (!zoom) {
-        zoom = map.getZoom();
+function loadSidebarOrgDetail(org) {
+    // Grab relevant information from the target clicked marker
+    // Use the org info to populate the correct fields in the organization detail pane
+    document.getElementById("sidebar-lower-box").classList.remove("hidden");
+    document.getElementById("org-detail").classList.remove("hidden");
+    document.getElementById("organization-name").innerHTML = org["Org Name"]
+    document.getElementById("organization-address").innerHTML = org["Address"]
+    document.getElementById("organization-section").innerHTML = org["Section"]
+    document.getElementById("organization-description").innerHTML = org["Description & Hours"]
+    document.getElementById("organization-phone").innerHTML = org["Phone Number"]
+
+    // If the sidebar is currently collapsed, open it.
+    if (document.querySelector('#sidebar').classList.contains("collapsed")) {
+        toggleSidebar();
     }
-        
-    let bounds = L.latLngBounds([lat, lng], [lat, lng])
-    map = map.fitBounds(bounds,{                                // fitBounds rather than setView to allow for variable sidebar width
-        maxZoom: zoom,
-        paddingTopLeft: [sidebar.offsetWidth, 0],
-        animate: true,
-        duration: .25,
-        easeLinearity: 0.5,
-        noMoveStart: false
-    });
 }
+
+function toggleSidebar() {
+
+    sidebar.classList.toggle('collapsed');
+
+    const controls = document.querySelector('.leaflet-control-container .leaflet-top.leaflet-left');
+    controls.classList.toggle('collapsed');
+}
+
 
 // ###################################################  Add mobile compatibility  #####################################################
-document.addEventListener('resize', e => getOrientation());
+//window.onresize = determineLayout;
 
-window.onresize = getOrientation;
-
-function getOrientation() {
+function determineLayout() {
+    sidebar = document.getElementById('sidebar');
     const height = window.innerHeight;
     const width = window.innerWidth;
 
-    if (width > height) {
-        return "landscape";
-    }
-    else {
-        return "portrait";
+    if (height > width) {
+        sidebar.classList.add("mobile");
+        const searchResults = document.getElementById("search-results");
+        const lowerBox = document.getElementById("sidebar-lower-box");
+        lowerBox.classList.add("collapsed");
+        lowerBox.append(searchResults);
+
     }
 }
+
+
 
 // ###################################################  Build the page  #####################################################
 
 // Call the function to fetch and display data
 document.addEventListener('DOMContentLoaded', function (event) {
-    sidebar = document.getElementById('sidebar');
+    determineLayout();
     createMap().then((p) => {
         populateGenericDropdown("countyDropdown", counties);        // Fill in filter dropdowns with correct county and section info
         populateGenericDropdown("resourceDropdown", sections);

@@ -68,16 +68,22 @@
                         Clear
                     </button>
                 </div>
-                <div id="search-results" class="w-100 overflow-auto hide-on-collapse d-none">
+                <div id="search-results" class="w-100 overflow-auto hide-on-collapse hidden">
                 </div>
 
             </div>
 
-            <div id="sidebar-lower-box" class="row-1 nav-section overflow-auto flex-grow-1 hidden hide-on-collapse">
+            <div id="sidebar-lower-box" class="row-1 nav-section overflow-auto flex-grow-1 hide-on-collapse hidden">
+                <div id="org-detail" class="hidden">
                     <div class="flex-column">
                         <div class="row" style="padding-top: 10px;">
-                            <div class="col-auto">
+                            <div class="col flex-grow-1">
                                 <h5 id="organization-name">Organization</h5>
+                            </div>
+                            <div class="col-auto flex-auto">
+                                <button id="org-detail-back" type="button" class="icon-button col-auto btn flex-auto">
+                                    <img src="./icons/arrow.svg" alt="" aria-hidden="true" width="30" height="30" class="ui-button button-lt svg flip-x">
+                                </button>
                             </div>
                         </div>
                         <div class="row address-row">
@@ -101,6 +107,7 @@
                             </div>
                         </div>
                     </div>
+                </div>
             </div>
         </div>
     </div>
