@@ -371,6 +371,7 @@ function loadSidebarOrgDetail(org) {
     // Grab relevant information from the target clicked marker
     // Use the org info to populate the correct fields in the organization detail pane
     document.getElementById("sidebar-lower-box").classList.remove("hidden");
+    document.getElementById("sidebar-lower-box").classList.remove("collapsed");
     document.getElementById("org-detail").classList.remove("hidden");
     document.getElementById("organization-name").innerHTML = org["Org Name"]
     document.getElementById("organization-address").innerHTML = org["Address"]
@@ -408,6 +409,19 @@ function determineLayout() {
         const lowerBox = document.getElementById("sidebar-lower-box");
         lowerBox.classList.add("collapsed");
         lowerBox.append(searchResults);
+
+        let resizeHandle = document.createElement('div');
+        resizeHandle.id = "resize-handle";
+        resizeHandle.innerHTML = "<div></div>"
+
+        let lowerBoxWrapper = document.createElement("div");
+        lowerBoxWrapper.id = "lower-box-wrapper";
+        lowerBox.before(lowerBoxWrapper);
+        lowerBoxWrapper.append(resizeHandle);
+        lowerBoxWrapper.append(lowerBox);
+
+
+
 
     }
 }

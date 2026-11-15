@@ -8,7 +8,6 @@
     --sidebar-width: 400px;
     --sidebar-width-collapsed: 70px;
     height: 100vh;
-    overflow: hidden;
 }
 
 html, body {
@@ -62,11 +61,9 @@ html, body {
 
     #sidebar-lower-box {
         border-radius: 5px;
-        background-color: #b74f27;
-        color: white;
         flex: 2 0 50%; /* can shrink to 0, can grow up to 50% */
         max-height: 50%; /* never exceed 50% */
-        overflow: auto;
+        overflow-y: auto;
     }
 
         #sidebar-lower-box:not(:empty):not(:has(> :not(.hidden))) { /*if #sidebar-lower-box has all children hidden*/
@@ -77,21 +74,30 @@ html, body {
             display: none;
         }
 
-    #sidebar #org-detail.hidden{
+
+#org-detail {
+    background-color: #b74f27;
+    color: white;
+    height: 100%;
+    overflow-y: auto;
+    border-radius: 4px;
+}
+    #org-detail.hidden {
         display: none;
     }
+#org-detail-back {
+    display: inherit;
+}
 
 
 
 #sidebar.mobile {
-    resize: vertical;
     position: absolute;
     width: 100%;
     height: 100%;
     top: 0;
     left: 0;
     padding: 0;
-    overflow: auto;
     z-index: 1000;
     background: transparent;
     pointer-events: none
@@ -102,7 +108,6 @@ html, body {
         flex: 0;
         padding: 10px;
         min-height: fit-content;
-        overflow-y: auto;
         pointer-events: all;
     }
 
@@ -110,35 +115,77 @@ html, body {
         display: none;
     }
 
-    #sidebar.mobile #sidebar-lower-box {
-        width: 100%;
-        height: 50%;
-        border-radius: 5px;
-        position: absolute;
-        bottom: 0px;
+    #sidebar.mobile #lower-box-wrapper {
         pointer-events: all;
+        width: 100%;
+        max-height: 30%;
+        height: 30%;
+        min-height: 12px;           /*Min height = to size of grabbable bar*/
+        position: absolute;
+        bottom: 0;
     }
+
+#lower-box-wrapper:has( #sidebar-lower-box.collapsed) {
+    height: 14px;
+}
+
+#sidebar.mobile #sidebar-lower-box {
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    border-radius: 0;
+    position: absolute;
+}
 
         #sidebar.mobile #sidebar-lower-box.collapsed {         
             height: 0px;
         }
 
+    #sidebar.mobile #search-results {
+        overflow-y: auto;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important; 
+    }
 
     #sidebar.mobile #org-detail {
-        background-color: #b74f27;
-        color: white;
-        height: 100%;
-        overflow: auto;
+        display: sticky;
+        top: 0;
     }
-    #sidebar.mobile #org-detail-back{
-        display: inherit ;
-    }
-        #search-results.hidden, #sidebar.mobile #org-detail.hidden, #org-detail:not(.hidden) + #search-results{
-            opacity: 0;
-            display: none;
-        }
 
 
+
+#search-results.hidden, #sidebar.mobile #org-detail.hidden, #org-detail:not(.hidden) + #search-results{
+    opacity: 0;
+    display: none;
+}
+
+
+#resize-handle {
+    margin-bottom: -16px;
+    height: 30px;
+    border-radius: 0px;
+    background-color: #000000;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    display: flex;
+    justify-content: center;
+    position: sticky;
+    top: 0;
+    cursor: grab;
+    width: 100%;
+}
+    #resize-handle:active {
+        cursor: grabbing;
+        user-select: none;
+    }
+
+    #resize-handle div {                /*interior line is 4 px tall, offset from top of bar by 5px, visible space is 14px total*/
+        background-color: #bbbbbb;
+        height: 4px;
+        width: 24px;
+        border-radius: 2px;
+        margin-top: 5px;
+    }
 
 
 
@@ -271,7 +318,8 @@ text-align: center;
     margin-top: 5px !important;
     margin-bottom: 5px !important;
     padding: 5px;
-    color: #5d636a
+    color: #5d636a;
+    overflow-y: auto;
 }
 
 .search-result {
