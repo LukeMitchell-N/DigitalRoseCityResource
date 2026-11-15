@@ -2,7 +2,7 @@ const spreadsheetId = '1dsL9BS4IJMr-5jYSyyS_bTYV82wVRCtZrzOZoJUXgpY';
 const apiKey = 'AIzaSyAb5dMPDAJ19o2-gxbyzvb8ChewsG8JxzM';
 const orgs = [], counties = [], sections = [];
 let sidebar, userLocationMarker = null;
-let orientation = "landscape";
+let mobileLayout = false;
 let animating = false;      // Is sidebar actively expanding/collapsing
 import {allMarkers, searchMarkers, createCustomCluster} from "./CustomClustering.js"      
 import { icons } from "./icons/icons.js"
@@ -237,15 +237,40 @@ function focusOnCoords(lat, lng, zoom = null) {
         zoom = map.getZoom();
     }
 
+    
+
     let bounds = L.latLngBounds([lat, lng], [lat, lng])
     map = map.fitBounds(bounds, {                                // fitBounds rather than setView to allow for variable sidebar width
         maxZoom: zoom,
-        paddingTopLeft: [sidebar.offsetWidth, 0],
+        paddingTopLeft: getSidebarOffset(true),
+        paddingBottomRight: getSidebarOffset(false),
         animate: true,
         duration: .25,
         easeLinearity: 0.5,
         noMoveStart: false
     });
+}
+
+function getSidebarOffset(isTopLeft) {
+    if (isTopLeft) {
+        if (mobileLayout) {
+            let upperBox = document.getElementById("sidebar-upper-box");
+            return [0, upperBox.offsetHeight]; 
+        }
+        else {
+            return [sidebar.offsetWidth, 0];
+        } 
+    }
+    else {
+        if (mobileLayout) {
+            let lowerBox = document.getElementById("sidebar-lower-box");
+            return [0, lowerBox.offsetHeight];
+        }
+        else{
+            return [0, 0]
+        } 
+    }
+    
 }
 
 
@@ -312,7 +337,8 @@ function searchOrganizations(filteredOrganizations = orgs, searchString="", move
     addOrgsToResultsPane(searchResultOrgs);                                     // Build results list
     if (moveMap) {                                                              // If moving the map for this search
         map.fitBounds(searchMarkers.getBounds(), {                                  // Adjust map to show all results    
-            paddingTopLeft: [sidebar.offsetWidth, 0],
+            paddingTopLeft: getSidebarOffset(true),
+            paddingBottomRight: getSidebarOffset(false),
             animate: true,
             duration: .25,
             easeLinearity: 0.5,
@@ -376,6 +402,7 @@ function determineLayout() {
     const width = window.innerWidth;
 
     if (height > width) {
+        mobileLayout = true;
         sidebar.classList.add("mobile");
         const searchResults = document.getElementById("search-results");
         const lowerBox = document.getElementById("sidebar-lower-box");

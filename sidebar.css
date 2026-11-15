@@ -76,9 +76,7 @@ html, body {
             opacity: 0;
             display: none;
         }
-    #sidebar #org-detail-back {
-        display: none;
-    }
+
     #sidebar #org-detail.hidden{
         display: none;
     }
