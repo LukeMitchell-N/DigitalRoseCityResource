@@ -128,7 +128,7 @@ function populateGenericDropdown(ID, list) {
 }
 
 
-// Set up click events for sidebar (html) buttons
+// Set up click events for sidebar buttons
 function createSidebarClickEvents() {
     document.getElementById("org-search").addEventListener("keypress", function (event) {
         if (event.key === "Enter") {                                        // If the user presses "Enter" while in the search box
@@ -144,16 +144,12 @@ function createSidebarClickEvents() {
     });
 
     document.getElementById("org-search-enter").addEventListener('click', e => {
-        document.getElementById("sidebar-lower-box").classList.remove("collapsed");
-        document.getElementById("sidebar-lower-box").classList.add("full");
-        document.getElementById("sidebar-lower-box").classList.remove("hidden");
-        document.getElementById("sidebar-lower-box").classList.remove("hidden");
         document.getElementById("org-detail").classList.add("hidden");
         filterAndSearchOrganizations()
     })
 
     document.getElementById("org-search-clear").addEventListener('click', e => clearFilters())
-    document.getElementById("sidebar-toggle").addEventListener('click', e => toggleSidebar())
+    document.getElementById("sidebar-toggle").addEventListener('click', e => operateSidebar())
     document.getElementById("org-detail-back").addEventListener('click', e => {
         document.getElementById("org-detail").classList.add("hidden");    
     })
@@ -265,8 +261,8 @@ function getSidebarOffset(isTopLeft) {
     }
     else {
         if (mobileLayout) {
-            let lowerBox = document.getElementById("sidebar-lower-box");
-            return [0, lowerBox.offsetHeight];
+            let lowerBoxWrapper = document.getElementById("lower-box-wrapper");
+            return [0, lowerBoxWrapper.offsetHeight];
         }
         else{
             return [0, 0]
@@ -336,20 +332,22 @@ function searchOrganizations(filteredOrganizations = orgs, searchString="", move
 
     map.removeLayer(allMarkers);                                                // Swap the active marker layers
     map.addLayer(searchMarkers);      
-    addOrgsToResultsPane(searchResultOrgs);                                     // Build results list
-    if (moveMap) {                                                              // If moving the map for this search
-        map.fitBounds(searchMarkers.getBounds(), {                                  // Adjust map to show all results    
-            paddingTopLeft: getSidebarOffset(true),
-            paddingBottomRight: getSidebarOffset(false),
-            animate: true,
-            duration: .25,
-            easeLinearity: 0.5,
-            noMoveStart: false
-        })
-    }
+    addOrgsToResultsPane(searchResultOrgs).then(e => {
+        if (moveMap) {                                                              // If moving the map for this search
+            map.fitBounds(searchMarkers.getBounds(), {                                  // Adjust map to show all results    
+                paddingTopLeft: getSidebarOffset(true),
+                paddingBottomRight: getSidebarOffset(false),
+                animate: true,
+                duration: .25,
+                easeLinearity: 0.5,
+                noMoveStart: false
+            })
+        }
+    })                                     // Build results list
+    
 }
 
-function addOrgsToResultsPane(searchResultOrgs) {
+async function addOrgsToResultsPane(searchResultOrgs) {
     var resultsParent = document.getElementById("search-results");
     resultsParent.replaceChildren()
     searchResultOrgs.forEach(org => {
@@ -364,17 +362,14 @@ function addOrgsToResultsPane(searchResultOrgs) {
         })
         resultsParent.appendChild(elem);
     })
-    if (resultsParent.classList.contains("hidden")) {
-        resultsParent.classList.toggle("hidden");
-    }
+
+    // Force the sidebar open
+    operateSidebar(true);
 }
 
 function loadSidebarOrgDetail(org) {
     // Grab relevant information from the target clicked marker
     // Use the org info to populate the correct fields in the organization detail pane
-    document.getElementById("sidebar-lower-box").classList.remove("hidden");
-    document.getElementById("sidebar-lower-box").classList.remove("collapsed");
-    document.getElementById("sidebar-lower-box").classList.remove("full");
     document.getElementById("org-detail").classList.remove("hidden");
     document.getElementById("organization-name").innerHTML = org["Org Name"]
     document.getElementById("organization-address").innerHTML = org["Address"]
@@ -382,18 +377,32 @@ function loadSidebarOrgDetail(org) {
     document.getElementById("organization-description").innerHTML = org["Description & Hours"]
     document.getElementById("organization-phone").innerHTML = org["Phone Number"]
 
-    // If the sidebar is currently collapsed, open it.
-    if (document.querySelector('#sidebar').classList.contains("collapsed")) {
-        toggleSidebar();
-    }
+    operateSidebar(true);
 }
 
-function toggleSidebar() {
+function operateSidebar(expand = null) {
 
-    sidebar.classList.toggle('collapsed');
-
-    const controls = document.querySelector('.leaflet-control-container .leaflet-top.leaflet-left');
-    controls.classList.toggle('collapsed');
+    if (mobileLayout) {
+        mobileSetBottomState(expand)
+    }
+    else {
+        const controls = document.querySelector('.leaflet-control-container .leaflet-top.leaflet-left');
+        if (!expand) {
+            sidebar.classList.toggle('collapsed');
+            controls.classList.toggle('collapsed');
+        }
+        else if (expand == true) { 
+            sidebar.classList.remove('collapsed');
+            controls.classList.remove('collapsed');
+        }
+        else {
+            sidebar.classList.add('collapsed');
+            controls.classList.add('collapsed');
+        }
+        
+    }
+    
+    
 }
 
 
@@ -411,6 +420,7 @@ function determineLayout() {
         const searchResults = document.getElementById("search-results");
         const lowerBox = document.getElementById("sidebar-lower-box");
         lowerBox.classList.add("collapsed");
+        lowerBox.classList.remove("hidden");
         lowerBox.append(searchResults);
 
         let resizeHandle = document.createElement('div');
@@ -437,13 +447,14 @@ function mobileSidebarHandleResize(e) {
     let lowerBoxWrapper = document.getElementById("lower-box-wrapper")
     let initialHeightStr = window.getComputedStyle(lowerBoxWrapper).getPropertyValue("height");
     let initialHeight = parseFloat(initialHeightStr);
+    lowerBoxWrapper.style.height = initialHeight + "px";
 
     // Catch the current y position
-    let initialY = e.clientY;
+    let initialY = getYPosition(e);
 
     const moveHandler = e => {
         console.log("Dragging!");
-        let newHeight = initialHeight + (initialY - e.clientY);
+        let newHeight = initialHeight + (initialY - getYPosition(e));
         lowerBoxWrapper.style.height = newHeight + "px";
     }
 
@@ -454,8 +465,27 @@ function mobileSidebarHandleResize(e) {
         document.removeEventListener("mouseup", stopHandler);
         document.removeEventListener("touchend", stopHandler);
 
+        mobileSetBottomState(null, parseFloat(lowerBoxWrapper.style.height));
+    }
 
+    document.addEventListener("mousemove", moveHandler);
+    document.addEventListener("touchmove", moveHandler);
+    document.addEventListener("mouseup", stopHandler);
+    document.addEventListener("touchend", stopHandler);
+}
+
+function getYPosition(e) {
+    if (e.touches && e.touches.length > 0) {
+        return e.touches[0].clientY;
+    }
+
+    return e.clientY;
+}
+
+function mobileSetBottomState(setFull, prevHeight = null) {
+    if (mobileLayout) {
         // Get max height
+        let lowerBoxWrapper = document.getElementById("lower-box-wrapper");
         let maxHeightStr = window.getComputedStyle(lowerBoxWrapper).getPropertyValue("max-height");
         let maxHeight = 0;
         if (maxHeightStr.endsWith("px")) {
@@ -465,24 +495,32 @@ function mobileSidebarHandleResize(e) {
             let pct = parseFloat(maxHeightStr) / 100;
             let parentHeight = parseFloat(window.getComputedStyle(sidebar).getPropertyValue("height"));
             maxHeight = pct * parentHeight;
-            console.log("parentHeight = " + parentHeight);
-            console.log("maxHeight = " + maxHeight);
         }
-        if (parseFloat(lowerBoxWrapper.style.height) > maxHeight / 2) {
+
+        // If this function was called at letting go of the handle, figure out whether it should snap up or down
+        if (prevHeight) {
+            if (prevHeight > maxHeight / 2) {
+                setFull = true;
+            }
+            else {
+                setFull = false
+            }
+        }
+        
+        if (setFull) {
             document.getElementById("sidebar-lower-box").classList.add("full")
+            document.getElementById("sidebar-lower-box").classList.remove("collapsed")
             lowerBoxWrapper.style.height = maxHeight + "px";
         }
         else {
             document.getElementById("sidebar-lower-box").classList.add("collapsed")
+            document.getElementById("sidebar-lower-box").classList.remove("full")
             lowerBoxWrapper.style.height = "0px";
         }
+        
+        
     }
-
-    document.addEventListener("mousemove", moveHandler);
-    document.addEventListener("touchmove", moveHandler);
-
-    document.addEventListener("mouseup", stopHandler);
-    document.addEventListener("touchend", stopHandler);
+    
 }
 
 

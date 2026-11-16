@@ -7,6 +7,7 @@
     --collapse-time: .3s;
     --sidebar-width: 400px;
     --sidebar-width-collapsed: 70px;
+    --handle-thickness: 20px;
     height: 100vh;
     overflow: hidden;
 }
@@ -126,13 +127,13 @@ html, body {
         pointer-events: all;
         width: 100%;
         max-height: 30%;
-        min-height: 14px; /*Min height = to size of grabbable bar*/
+        height: auto;
+        min-height: var(--handle-thickness); /*Min height = to size of grabbable bar*/
         position: absolute;
         bottom: 0;
         background-color: #000000;
         border-top-left-radius: 4px;
         border-top-right-radius: 4px;
-        resize: vertical;
     }
 
 #lower-box-wrapper:has( #sidebar-lower-box.full) {
@@ -141,7 +142,7 @@ html, body {
 }
 
 #lower-box-wrapper:has( #sidebar-lower-box.collapsed) {
-    height: 14px !important;
+    height: var(--handle-thickness) !important;
     transition: height var(--collapse-time) ease;
 }
 
@@ -152,10 +153,6 @@ html, body {
     border-radius: 0;
     position: absolute;
 }
-
-        #sidebar.mobile #sidebar-lower-box.collapsed {         
-            height: 0px;
-        }
 
     #sidebar.mobile #search-results {
         overflow-y: auto;
@@ -173,7 +170,7 @@ html, body {
 
 #resize-handle {
     margin-bottom: -16px;
-    height: 30px;
+    height: calc(var(--handle-thickness) + 16px);
     border-radius: 0px;
     display: flex;
     justify-content: center;
@@ -187,12 +184,12 @@ html, body {
         user-select: none;
     }
 
-    #resize-handle div {                /*interior line is 4 px tall, offset from top of bar by 5px, visible space is 14px total*/
+    #resize-handle div { /*interior line is 4 px tall, offset from top of bar by 5px, visible space is 14px total*/
         background-color: #bbbbbb;
         height: 4px;
-        width: 24px;
+        width: 32px;
         border-radius: 2px;
-        margin-top: 5px;
+        margin-top: calc(calc(var(--handle-thickness) - 4px) / 2);
     }
 
 
