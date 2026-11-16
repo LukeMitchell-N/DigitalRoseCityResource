@@ -8,6 +8,7 @@
     --sidebar-width: 400px;
     --sidebar-width-collapsed: 70px;
     height: 100vh;
+    overflow: hidden;
 }
 
 html, body {
