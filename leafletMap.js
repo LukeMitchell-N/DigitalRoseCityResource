@@ -145,6 +145,8 @@ function createSidebarClickEvents() {
 
     document.getElementById("org-search-enter").addEventListener('click', e => {
         document.getElementById("sidebar-lower-box").classList.remove("collapsed");
+        document.getElementById("sidebar-lower-box").classList.add("full");
+        document.getElementById("sidebar-lower-box").classList.remove("hidden");
         document.getElementById("sidebar-lower-box").classList.remove("hidden");
         document.getElementById("org-detail").classList.add("hidden");
         filterAndSearchOrganizations()
@@ -372,6 +374,7 @@ function loadSidebarOrgDetail(org) {
     // Use the org info to populate the correct fields in the organization detail pane
     document.getElementById("sidebar-lower-box").classList.remove("hidden");
     document.getElementById("sidebar-lower-box").classList.remove("collapsed");
+    document.getElementById("sidebar-lower-box").classList.remove("full");
     document.getElementById("org-detail").classList.remove("hidden");
     document.getElementById("organization-name").innerHTML = org["Org Name"]
     document.getElementById("organization-address").innerHTML = org["Address"]
@@ -413,6 +416,8 @@ function determineLayout() {
         let resizeHandle = document.createElement('div');
         resizeHandle.id = "resize-handle";
         resizeHandle.innerHTML = "<div></div>"
+        resizeHandle.addEventListener("mousedown", e => mobileSidebarHandleResize(e))
+        resizeHandle.addEventListener("touchstart", e => mobileSidebarHandleResize(e))
 
         let lowerBoxWrapper = document.createElement("div");
         lowerBoxWrapper.id = "lower-box-wrapper";
@@ -421,10 +426,65 @@ function determineLayout() {
         lowerBoxWrapper.append(lowerBox);
 
 
-
-
     }
 }
+
+function mobileSidebarHandleResize(e) {
+    document.getElementById("sidebar-lower-box").classList.remove("collapsed");
+    document.getElementById("sidebar-lower-box").classList.remove("full");
+
+    // Catch the current height of the sidebar-lower-box wrapper
+    let lowerBoxWrapper = document.getElementById("lower-box-wrapper")
+    let initialHeightStr = window.getComputedStyle(lowerBoxWrapper).getPropertyValue("height");
+    let initialHeight = parseFloat(initialHeightStr);
+
+    // Catch the current y position
+    let initialY = e.clientY;
+
+    const moveHandler = e => {
+        console.log("Dragging!");
+        let newHeight = initialHeight + (initialY - e.clientY);
+        lowerBoxWrapper.style.height = newHeight + "px";
+    }
+
+    const stopHandler = e => {
+        console.log("Stopping!");
+        document.removeEventListener("mousemove", moveHandler);
+        document.removeEventListener("touchmove", moveHandler);
+        document.removeEventListener("mouseup", stopHandler);
+        document.removeEventListener("touchend", stopHandler);
+
+
+        // Get max height
+        let maxHeightStr = window.getComputedStyle(lowerBoxWrapper).getPropertyValue("max-height");
+        let maxHeight = 0;
+        if (maxHeightStr.endsWith("px")) {
+            maxHeight = parseFloat(maxHeightStr);
+        }
+        else if (maxHeightStr.endsWith("%")) {
+            let pct = parseFloat(maxHeightStr) / 100;
+            let parentHeight = parseFloat(window.getComputedStyle(sidebar).getPropertyValue("height"));
+            maxHeight = pct * parentHeight;
+            console.log("parentHeight = " + parentHeight);
+            console.log("maxHeight = " + maxHeight);
+        }
+        if (parseFloat(lowerBoxWrapper.style.height) > maxHeight / 2) {
+            document.getElementById("sidebar-lower-box").classList.add("full")
+            lowerBoxWrapper.style.height = maxHeight + "px";
+        }
+        else {
+            document.getElementById("sidebar-lower-box").classList.add("collapsed")
+            lowerBoxWrapper.style.height = "0px";
+        }
+    }
+
+    document.addEventListener("mousemove", moveHandler);
+    document.addEventListener("touchmove", moveHandler);
+
+    document.addEventListener("mouseup", stopHandler);
+    document.addEventListener("touchend", stopHandler);
+}
+
 
 
 

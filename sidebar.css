@@ -107,7 +107,7 @@ html, body {
     padding: 0;
     z-index: 1000;
     background: transparent;
-    pointer-events: none
+    pointer-events: none;
 }
     #sidebar.mobile #sidebar-upper-box {
         position: relative;
@@ -126,17 +126,23 @@ html, body {
         pointer-events: all;
         width: 100%;
         max-height: 30%;
-        height: 30%;
-        min-height: 12px; /*Min height = to size of grabbable bar*/
+        min-height: 14px; /*Min height = to size of grabbable bar*/
         position: absolute;
         bottom: 0;
         background-color: #000000;
         border-top-left-radius: 4px;
         border-top-right-radius: 4px;
+        resize: vertical;
     }
 
+#lower-box-wrapper:has( #sidebar-lower-box.full) {
+    height: 30% !important;
+    transition: height var(--collapse-time) ease;
+}
+
 #lower-box-wrapper:has( #sidebar-lower-box.collapsed) {
-    height: 14px;
+    height: 14px !important;
+    transition: height var(--collapse-time) ease;
 }
 
 #sidebar.mobile #sidebar-lower-box {
