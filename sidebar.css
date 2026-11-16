@@ -7,7 +7,7 @@
     --collapse-time: .3s;
     --sidebar-width: 400px;
     --sidebar-width-collapsed: 70px;
-    --handle-thickness: 20px;
+    --handle-thickness: 32px;
     height: 100vh;
     overflow: hidden;
 }
@@ -132,8 +132,8 @@ html, body {
         position: absolute;
         bottom: 0;
         background-color: #000000;
-        border-top-left-radius: 4px;
-        border-top-right-radius: 4px;
+        border-top-left-radius: 16px;
+        border-top-right-radius: 16px;
     }
 
 #lower-box-wrapper:has( #sidebar-lower-box.full) {
