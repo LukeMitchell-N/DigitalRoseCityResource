@@ -13,7 +13,7 @@ export let searchMarkers = L.markerClusterGroup({
     //spiderfyOnMaxZoom: true,
     //spiderfyOnEveryZoom: true,
 });
-var zoomSwitchPointMarker = 16;
+var zoomSwitchPointMarker = 15;
 var smallestPointSize = 30;
 function determineCurrentMaxClusterRadius(zoom) {
     if (zoom >= zoomSwitchPointMarker) {
