@@ -400,6 +400,7 @@ function operateSidebar(expand = null) {
         else if (expand == true) { 
             sidebar.classList.remove('collapsed');
             controls.classList.remove('collapsed');
+            document.getElementById('search-results').classList.remove("hidden");
         }
         else {
             sidebar.classList.add('collapsed');
@@ -424,6 +425,7 @@ function determineLayout() {
         mobileLayout = true;
         sidebar.classList.add("mobile");
         const searchResults = document.getElementById("search-results");
+        searchResults.classList.remove("hidden");
         const lowerBox = document.getElementById("sidebar-lower-box");
         lowerBox.classList.add("collapsed");
         lowerBox.classList.remove("hidden");

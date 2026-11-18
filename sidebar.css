@@ -40,13 +40,13 @@ html, body {
     #sidebar * {
         transition: opacity var(--collapse-time) ease;
     }
-    #sidebar .leaflet-control-container .leaflet-top.leaflet-left {
+    .leaflet-top.leaflet-left {
         left: var(--sidebar-width);
         top: 0px;
         transition: left var(--collapse-time) ease;
     }
 
-        #sidebar .leaflet-control-container .leaflet-top.leaflet-left.collapsed {
+        .leaflet-top.leaflet-left.collapsed {
             left: var(--sidebar-width-collapsed);
         }
 
@@ -165,13 +165,17 @@ html, body {
     }
 
 
-#search-results.hidden, #sidebar.mobile #org-detail.hidden, #org-detail:not(.hidden) + #search-results{
+#search-results.hidden, #sidebar.mobile #org-detail.hidden, #org-detail:not(.hidden) + #search-results {
     opacity: 0;
     display: none;
+    pointer-events: none;
 }
 
 body:has(#sidebar.mobile) .leaflet-top {
     top: var(--mobile-top-height, 150px);
+}
+body:has(#sidebar.mobile) .leaflet-left {
+    left: 0px;
 }
 
 
