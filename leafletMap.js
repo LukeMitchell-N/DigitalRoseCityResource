@@ -1,6 +1,6 @@
 const spreadsheetId = '1dsL9BS4IJMr-5jYSyyS_bTYV82wVRCtZrzOZoJUXgpY';
 const apiKey = 'AIzaSyAb5dMPDAJ19o2-gxbyzvb8ChewsG8JxzM';
-const orgs = [], counties = [], sections = [];
+let orgs = [], counties = [], sections = [];
 let sidebar, userLocationMarker = null;
 let mobileLayout = false;
 let animating = false;      // Is sidebar actively expanding/collapsing
@@ -13,7 +13,7 @@ import { icons } from "./icons/icons.js"
 //Setting up the map
 async function createMap() {
     await fetchGoogleSheetData()
-
+    sortOrgs();
     map = L.map('myMap');                         
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png?key=cb1_2jrm_1_0d44df88927d5e30fd03a99b', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
@@ -112,6 +112,12 @@ const rowsToObjects = (rows, sheet) => {
         obj.County = sheet;                                                     // Add the county as a new property
         return obj;
     });
+}
+
+function sortOrgs() {
+    orgs = orgs.sort(function (a, b) {
+        return (a["Org Name"] < b["Org Name"]) ? -1 : (a["Org Name"] > b["Org Name"]) ? 1: 0;
+    })
 }
 
 // ###################################################  Populate sidebar detail  ######################################################
@@ -434,6 +440,11 @@ function determineLayout() {
         lowerBox.before(lowerBoxWrapper);
         lowerBoxWrapper.append(resizeHandle);
         lowerBoxWrapper.append(lowerBox);
+
+        // Temporary solution - set leaflet controls to fixed top offset
+        const upperBox = document.getElementById("sidebar-upper-box");
+        document.documentElement.style.setProperty('--mobile-top-height', window.getComputedStyle(upperBox).getPropertyValue("height"));
+
 
 
     }

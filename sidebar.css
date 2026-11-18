@@ -111,12 +111,16 @@ html, body {
     pointer-events: none;
 }
     #sidebar.mobile #sidebar-upper-box {
-        position: relative;
+        position: absolute;
+        width: 100%;
+        top:0;
+        height: fit-content;
         background: black;
         flex: 0;
         padding: 10px;
         min-height: fit-content;
         pointer-events: all;
+        overflow: visible;
     }
 
     #sidebar.mobile #sidebar-toggle {
@@ -161,10 +165,13 @@ html, body {
     }
 
 
-
 #search-results.hidden, #sidebar.mobile #org-detail.hidden, #org-detail:not(.hidden) + #search-results{
     opacity: 0;
     display: none;
+}
+
+body:has(#sidebar.mobile) .leaflet-top {
+    top: var(--mobile-top-height, 150px);
 }
 
 
